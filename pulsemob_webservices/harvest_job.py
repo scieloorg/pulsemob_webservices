@@ -4,8 +4,8 @@ __author__ = 'jociel'
 
 import ConfigParser
 import solr
-from pulsemob_webservices import solr_util
-from pulsemob_webservices.harvest import harvest
+from harvest import harvest
+import solr_util
 
 
 def delete_article_entry(code):
