@@ -13,7 +13,7 @@ def do_request(url, params):
     return response
 
 
-def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepath, page_limit=10):
+def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepath, page_limit=None):
     with open(output_filepath, "w") as text_file:
         page = 0
         while True:
@@ -81,7 +81,7 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
 
     curs.execute("SELECT id FROM {0} WHERE action = '{1}'".format(table_name, action))
     rows = curs.fetchall()
-    for row in rows:
+    for r, row in enumerate(rows):
         code = row[0]
         dparams = {key: code}
         document = do_request(
@@ -101,6 +101,12 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
             add_update_entry_method(id, doc_ret, action)
         else:
             print "{0} '{1}' not found.".format(endpoint, id)
+
+        if r != 0 and r % 100 == 0:
+            if action == "I":
+                print "{0} entries added... continuing...".format(r)
+            elif action == "U":
+                print "{0} entries updated... continuing...".format(r)
 
     if action == "I":
         print "{0} entries added.".format(len(rows))

@@ -13,8 +13,6 @@ def get_solr_args_from_article(document):
     if original_title is not None:
         original_title = original_title
 
-    processing_date = datetime.strptime(article.processing_date, '%Y-%m-%d').isoformat()
-
     try:  # publication_date format maybe yyyy-mm-dd
         publication_date = datetime.strptime(article.publication_date, '%Y-%m-%d').isoformat()
     except ValueError:
@@ -50,7 +48,6 @@ def get_solr_args_from_article(document):
         "original_title": original_title,
         "original_abstract": article.original_abstract(),
         "publication_date": "{0}Z".format(publication_date),
-        "processing_date": "{0}Z".format(processing_date),
         "journal_acronym": article.journal.acronym,
         "subject_areas": article.journal.subject_areas,
         "wos_subject_areas": article.journal.wos_subject_areas,
