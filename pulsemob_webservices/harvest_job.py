@@ -15,10 +15,10 @@ def delete_article_entry(code):
 
 
 def add_update_article_entry(code, document, action):
+    args = solr_util.get_solr_args_from_article(document)
     while True:
         try:
-            args = solr_util.get_solr_args_from_article(document)
-            solr_conn.add(**args)
+           solr_conn.add(**args)
             break
         except Exception as ex:
             print "An error has occurred trying to access Solr. Arguments passed to Solr and the traceback are below:"

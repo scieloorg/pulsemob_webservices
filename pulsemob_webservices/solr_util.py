@@ -40,8 +40,8 @@ def get_solr_args_from_article(document):
     authors = []
     if article_authors is not None:
         for author in article_authors:
-            author_name = remove_control_chars("{0} {1}".format(author["given_names"].encode('utf-8'), author["surname"].encode('utf-8')))
-            authors.append(author_name.decode('utf-8'))
+            author_name = "{0} {1}".format(author["given_names"].encode('utf-8'), author["surname"].encode('utf-8'))
+            authors.append(remove_control_chars(author_name.decode('utf-8')))
 
     article_first_author = article.first_author
     if article_first_author is not None:
