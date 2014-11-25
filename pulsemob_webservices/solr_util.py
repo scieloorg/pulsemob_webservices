@@ -4,6 +4,16 @@ __author__ = 'jociel'
 
 from xylose.scielodocument import Article
 from datetime import datetime
+import re
+
+control_chars = ''.join(map(unichr, range(0, 32) + range(127, 160)))
+control_char_re = re.compile('[%s]' % re.escape(control_chars))
+
+def remove_control_chars(s):
+    if s is None:
+        return ""
+    else:
+        return control_char_re.sub('', s)
 
 
 def get_solr_args_from_article(document):
@@ -30,23 +40,23 @@ def get_solr_args_from_article(document):
     authors = []
     if article_authors is not None:
         for author in article_authors:
-            author_name = "{0} {1}".format(author["given_names"].encode('utf-8'), author["surname"].encode('utf-8'))
+            author_name = remove_control_chars("{0} {1}".format(author["given_names"].encode('utf-8'), author["surname"].encode('utf-8')))
             authors.append(author_name.decode('utf-8'))
 
     article_first_author = article.first_author
     if article_first_author is not None:
-        first_author = "{0} {1}".format(article_first_author["given_names"].encode('utf-8'), article_first_author["surname"].encode('utf-8')).decode('utf-8')
+        first_author = remove_control_chars("{0} {1}".format(article_first_author["given_names"].encode('utf-8'), article_first_author["surname"].encode('utf-8')).decode('utf-8'))
     else:
         first_author = ""
 
     args = {
-        "code": id,
+        "code": article.publisher_id,
         "scielo_issn": article.journal.scielo_issn,
         "any_issn": article.journal.any_issn(),
-        "journal_title": article.journal.title,
-        "journal_abbreviated_title": article.journal.abbreviated_title,
-        "original_title": original_title,
-        "original_abstract": article.original_abstract(),
+        "journal_title": remove_control_chars(article.journal.title),
+        "journal_abbreviated_title": remove_control_chars(article.journal.abbreviated_title),
+        "original_title": remove_control_chars(original_title),
+        "original_abstract": remove_control_chars(article.original_abstract()),
         "publication_date": "{0}Z".format(publication_date),
         "journal_acronym": article.journal.acronym,
         "subject_areas": article.journal.subject_areas,
@@ -64,16 +74,20 @@ def get_solr_args_from_article(document):
     article_translated_abstracts = article.translated_abstracts()
     if article_translated_abstracts is not None:
         for language in article_translated_abstracts:
-            args["translated_abstracts_{0}".format(language)] = article_translated_abstracts[language]
+            args["translated_abstracts_{0}".format(language)] = remove_control_chars(article_translated_abstracts[language])
 
     article_translated_titles = article.translated_titles()
     if article_translated_titles is not None:
         for language in article_translated_titles:
-            args["translated_titles_{0}".format(language)] = article_translated_titles[language]
+            args["translated_titles_{0}".format(language)] = remove_control_chars(article_translated_titles[language])
 
     article_keywords = article.keywords()
     if article_keywords is not None:
         for language in article_keywords:
-            args["keywords_{0}".format(language)] = article_keywords[language]
+            print article_keywords[language]
+            keywords = []
+            for keyword in article_keywords[language]:
+                keywords.append(remove_control_chars(keyword))
+            args["keywords_{0}".format(language)] = keywords
 
     return args

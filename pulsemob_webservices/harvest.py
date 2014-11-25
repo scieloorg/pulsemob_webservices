@@ -1,10 +1,13 @@
 # coding: utf-8
+import time
+import solr
 
 __author__ = 'jociel'
 
 import requests
 import psycopg2
-from xylose.scielodocument import Journal
+from xylose.scielodocument import Journal, Article
+import solr_util
 
 
 def do_request(url, params):
@@ -19,7 +22,7 @@ def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepa
         while True:
             if page_limit is not None and page >= page_limit:
                 break
-            print 'Extracting articles from webservice (page {0})...'.format(page)
+            print '{0} - Extracting articles from webservice (page {1})...'.format(time.ctime(), page)
             params = {'offset': page*1000}
             identifiers = do_request(
                 '{0}/article/identifiers'.format(article_meta_uri),
@@ -37,7 +40,7 @@ def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepa
 
 
 def extract_data_from_journal_webservice_to_file(article_meta_uri, output_filepath):
-    print 'Extracting journals from webservice...'
+    print '{0} - Extracting journals from webservice...'.format(time.ctime())
     with open(output_filepath, "w") as text_file:
         documents = do_request(
             '{0}/{1}'.format(article_meta_uri, 'journal'),
@@ -50,7 +53,7 @@ def extract_data_from_journal_webservice_to_file(article_meta_uri, output_filepa
 
 
 def store_and_process_data_from_file(curs, input_filepath, data_table, temp_table):
-    print "Processing data..."
+    print "{0} - Processing data...".format(time.ctime())
     curs.execute("TRUNCATE {0}".format(temp_table))
     curs.execute("COPY {0} FROM '{1}' USING DELIMITERS ',' CSV".format(temp_table, input_filepath))
     curs.execute("UPDATE {0} a SET action='D' WHERE NOT EXISTS (SELECT 1 FROM {1} WHERE id = a.id)".format(data_table, temp_table))
@@ -59,20 +62,20 @@ def store_and_process_data_from_file(curs, input_filepath, data_table, temp_tabl
 
 
 def delete_entries(curs, table_name, delete_entry_method):
-    print "Deleting entries..."
+    print "{0} - Deleting entries...".format(time.ctime())
     curs.execute("SELECT id FROM {0} WHERE action = 'D'".format(table_name))
     rows = curs.fetchall()
     for row in rows:
         delete_entry_method(row[0])
 
-    print "{0} entries deleted.".format(len(rows))
+    print "{0} - {1} entries deleted.".format(time.ctime(), len(rows))
 
 
 def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_entry_method, action):
     if action == "I":
-        print "Adding entries..."
+        print "{0} - Adding entries...".format(time.ctime())
     elif action == "U":
-        print "Updating entries..."
+        print "{0} - Updating entries...".format(time.ctime())
 
     if endpoint == 'article':
         key = 'code'
@@ -104,14 +107,14 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
 
         if r != 0 and r % 100 == 0:
             if action == "I":
-                print "{0} entries added... continuing...".format(r)
+                print "{0} - {1} entries added... continuing...".format(time.ctime(), r)
             elif action == "U":
-                print "{0} entries updated... continuing...".format(r)
+                print "{0} - {1} entries updated... continuing...".format(time.ctime(), r)
 
     if action == "I":
-        print "{0} entries added.".format(len(rows))
+        print "{0} - {1} entries added.".format(time.ctime(), len(rows))
     elif action == "U":
-        print "{0} entries updated.".format(len(rows))
+        print "{0} = {1} entries updated.".format(time.ctime(), len(rows))
 
 
 def switch_and_clean_tables(curs, data_table_name, temp_table):
@@ -147,4 +150,30 @@ def harvest(article_meta_uri,
             add_update_entries(curs, temp_table, article_meta_uri, endpoint, add_update_entry, "U")
             switch_and_clean_tables(curs, data_table_name, temp_table)
         conn.commit()
-    print "Process finished."
+    print "{0} - Process finished.".format(time.ctime())
+
+
+if __name__ == '__main__':
+    code = "S0718-34372014000100009"
+    dparams = {"code": code}
+    document = do_request(
+        "http://articlemeta.scielo.org/api/v1/article", dparams
+    )
+    if document is None:
+        doc_ret = None
+    if isinstance(document, dict):
+        doc_ret = document
+    elif isinstance(document, list):
+        if len(document) > 0:
+            doc_ret = document[0]
+        else:
+            doc_ret = None
+
+    article = Article(doc_ret)
+    print article.translated_abstracts()
+    args = solr_util.get_solr_args_from_article(doc_ret)
+    print args
+    solr_uri = "http://192.168.0.2:8983/solr/pulsemob_solr"
+    solr_conn = solr.SolrConnection(solr_uri)
+    solr_conn.add(**args)
+
