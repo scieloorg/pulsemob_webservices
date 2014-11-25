@@ -2,20 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c17480e7-1b90-49c4-8991-d4cd4632b2db" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pulsemob_webservices/tests/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/requirements.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pulsemob_webservices/run_tests.py" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\article_harvest_test.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures\article_X0718-34372014000100009.json" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures\article_identifiers_0.json" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures\article_identifiers_1.json" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures\article_identifiers_2.json" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures\article_output_0.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures\article_output_1.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures\article_output_2.txt" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures\empty_article_identifiers.json" afterPath="" />
-      <change type="DELETED" beforePath="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\harvest_test.cfg" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/pulsemob_webservices/create_database_tables.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pulsemob_webservices/harvest.cfg" afterPath="$PROJECT_DIR$/pulsemob_webservices/harvest.cfg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pulsemob_webservices/harvest.py" afterPath="$PROJECT_DIR$/pulsemob_webservices/harvest.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="pulsemob_webservices.iws" />
@@ -42,8 +31,8 @@
       <file leaf-file-name="harvest_job.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest_job.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="867">
-              <caret line="33" column="46" selection-start-line="33" selection-start-column="38" selection-end-line="33" selection-end-column="46" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="292" max-vertical-offset="867">
+              <caret line="31" column="30" selection-start-line="29" selection-start-column="0" selection-end-line="31" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -52,10 +41,22 @@
       <file leaf-file-name="harvest.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-57.07143" vertical-offset="153" max-vertical-offset="3145">
-              <caret line="103" column="49" selection-start-line="103" selection-start-column="42" selection-end-line="103" selection-end-column="49" />
+            <state vertical-scroll-proportion="-66.17857" vertical-offset="714" max-vertical-offset="3145">
+              <caret line="151" column="21" selection-start-line="151" selection-start-column="8" selection-end-line="151" selection-end-column="21" />
               <folding>
                 <element signature="e#16#27#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="create_database_tables.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pulsemob_webservices/create_database_tables.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425">
+              <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
+              <folding>
+                <element signature="e#23#42#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -64,8 +65,8 @@
       <file leaf-file-name="article_harvest_test.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pulsemob_webservices/tests/article_harvest_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1921">
-              <caret line="17" column="40" selection-start-line="17" selection-start-column="40" selection-end-line="17" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1091" max-vertical-offset="1921">
+              <caret line="79" column="58" selection-start-line="76" selection-start-column="8" selection-end-line="79" selection-end-column="58" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -115,21 +116,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="article_output_2.txt" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pulsemob_webservices/tests/fixtures/article_output_2.txt">
+      <file leaf-file-name="harvest.cfg" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest.cfg">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="170">
-              <caret line="0" column="25" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="25" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="article_X0718-34372014000100009.json" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pulsemob_webservices/tests/fixtures/article_X0718-34372014000100009.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="102">
-              <caret line="0" column="8931" selection-start-line="0" selection-start-column="8931" selection-end-line="0" selection-end-column="8931" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
+              <caret line="1" column="80" selection-start-line="1" selection-start-column="80" selection-end-line="1" selection-end-column="80" />
               <folding />
             </state>
           </provider>
@@ -169,17 +160,18 @@
         <option value="$PROJECT_DIR$/tests/fixtures/article_output_1.txt" />
         <option value="$PROJECT_DIR$/tests/fixtures/article_output_2.txt" />
         <option value="$PROJECT_DIR$/tests/harvest_job_test.py" />
-        <option value="$PROJECT_DIR$/pulsemob_webservices/harvest.cfg" />
         <option value="$PROJECT_DIR$/tests/harvest_test.cfg" />
         <option value="$PROJECT_DIR$/pulsemob_webservices/harvest_job.py" />
         <option value="$PROJECT_DIR$/tests/fixtures/article_S0718-34372014000100009.json" />
-        <option value="$PROJECT_DIR$/pulsemob_webservices/harvest.py" />
         <option value="$PROJECT_DIR$/pulsemob_webservices/solr_util.py" />
         <option value="$PROJECT_DIR$/tests/article_harvest_test.py" />
         <option value="$PROJECT_DIR$/pulsemob_webservices/run_tests.py" />
         <option value="$PROJECT_DIR$/pulsemob_webservices/tests/article_harvest_test.py" />
         <option value="$PROJECT_DIR$/pulsemob_webservices/run_test.py" />
         <option value="$PROJECT_DIR$/pulsemob_webservices/tests/harvest_test.cfg" />
+        <option value="$PROJECT_DIR$/pulsemob_webservices/harvest.py" />
+        <option value="$PROJECT_DIR$/pulsemob_webservices/create_database_tables.py" />
+        <option value="$PROJECT_DIR$/pulsemob_webservices/harvest.cfg" />
       </list>
     </option>
   </component>
@@ -299,7 +291,7 @@
       <recent name="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\tests\fixtures" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.run_tests">
+  <component name="RunManager" selected="Python.create_database_tables">
     <configuration default="false" name="Unittest HarvestJobTests.test_harvest" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -348,30 +340,6 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <configuration default="false" name="Unittests in article_harvest_test" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="C:\Infobase\Projetos\Scielo\Desenvolvimento\Codigo\pulsemob_webservices\pulsemob_webservices\tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pulsemob_webservices" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/article_harvest_test.py" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
     <configuration default="false" name="run_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -403,6 +371,24 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="pulsemob_webservices" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pulsemob_webservices/run_tests.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="create_database_tables" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pulsemob_webservices" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="pulsemob_webservices" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pulsemob_webservices/create_database_tables.py" />
       <option name="PARAMETERS" value="" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
@@ -551,17 +537,17 @@
       <item index="0" class="java.lang.String" itemvalue="Python.load_data" />
       <item index="1" class="java.lang.String" itemvalue="Python tests.Unittest HarvestJobTests.test_harvest" />
       <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in HarvestJobTests (1)" />
-      <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in article_harvest_test" />
-      <item index="4" class="java.lang.String" itemvalue="Python.run_test" />
-      <item index="5" class="java.lang.String" itemvalue="Python.run_tests" />
+      <item index="3" class="java.lang.String" itemvalue="Python.run_test" />
+      <item index="4" class="java.lang.String" itemvalue="Python.run_tests" />
+      <item index="5" class="java.lang.String" itemvalue="Python.create_database_tables" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.run_tests" />
-        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in HarvestJobTests (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Python.run_test" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittest HarvestJobTests.test_harvest" />
-        <item index="4" class="java.lang.String" itemvalue="Python tests.Unittests in article_harvest_test" />
+        <item index="0" class="java.lang.String" itemvalue="Python.create_database_tables" />
+        <item index="1" class="java.lang.String" itemvalue="Python.run_tests" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in HarvestJobTests (1)" />
+        <item index="3" class="java.lang.String" itemvalue="Python.run_test" />
+        <item index="4" class="java.lang.String" itemvalue="Python tests.Unittest HarvestJobTests.test_harvest" />
       </list>
     </recent_temporary>
   </component>
@@ -763,14 +749,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest.cfg">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
-          <caret line="5" column="53" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pulsemob_webservices/tests/fixtures/article_identifiers_2.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="102">
@@ -835,24 +813,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-57.07143" vertical-offset="153" max-vertical-offset="3145">
-          <caret line="103" column="49" selection-start-line="103" selection-start-column="42" selection-end-line="103" selection-end-column="49" />
-          <folding>
-            <element signature="e#16#27#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest_job.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="867">
-          <caret line="33" column="46" selection-start-line="33" selection-start-column="38" selection-end-line="33" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python27/Lib/unittest/case.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1712" max-vertical-offset="18173">
@@ -871,20 +831,56 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/run_tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="340">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest_job.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="292" max-vertical-offset="867">
+          <caret line="31" column="30" selection-start-line="29" selection-start-column="0" selection-end-line="31" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pulsemob_webservices/tests/article_harvest_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1921">
-          <caret line="17" column="40" selection-start-line="17" selection-start-column="40" selection-end-line="17" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1040" max-vertical-offset="1921">
+          <caret line="79" column="58" selection-start-line="76" selection-start-column="8" selection-end-line="79" selection-end-column="58" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/run_tests.py">
+    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/create_database_tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="340">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425">
+          <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
+          <folding>
+            <element signature="e#23#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-66.17857" vertical-offset="714" max-vertical-offset="3145">
+          <caret line="151" column="21" selection-start-line="151" selection-start-column="8" selection-end-line="151" selection-end-column="21" />
+          <folding>
+            <element signature="e#16#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pulsemob_webservices/harvest.cfg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
+          <caret line="1" column="80" selection-start-line="1" selection-start-column="80" selection-end-line="1" selection-end-column="80" />
           <folding />
         </state>
       </provider>

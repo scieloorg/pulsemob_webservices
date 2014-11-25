@@ -114,7 +114,7 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
     if action == "I":
         print "{0} - {1} entries added.".format(time.ctime(), len(rows))
     elif action == "U":
-        print "{0} = {1} entries updated.".format(time.ctime(), len(rows))
+        print "{0} - {1} entries updated.".format(time.ctime(), len(rows))
 
 
 def switch_and_clean_tables(curs, data_table_name, temp_table):
