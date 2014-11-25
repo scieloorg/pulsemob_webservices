@@ -1,5 +1,6 @@
 # coding: utf-8
 import time
+import traceback
 import solr
 
 __author__ = 'jociel'
@@ -11,7 +12,18 @@ import solr_util
 
 
 def do_request(url, params):
-    response = requests.get(url, params=params).json()
+    while True:
+        try:
+            response = requests.get(url, params=params).json()
+            break
+        except Exception as ex:
+            print "An error has occurred trying to do an url request. " \
+                  "The used url and parameters and the traceback are below:"
+            print url
+            print params
+            traceback.print_exc()
+            print "Sleeping for 1 minute to try again..."
+            time.sleep(60)
 
     return response
 
