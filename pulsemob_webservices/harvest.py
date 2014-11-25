@@ -101,9 +101,9 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
                 doc_ret = None
 
         if doc_ret is not None:
-            add_update_entry_method(id, doc_ret, action)
+            add_update_entry_method(code, doc_ret, action)
         else:
-            print "{0} '{1}' not found.".format(endpoint, id)
+            print "{0} '{1}' not found.".format(endpoint, code)
 
         if r != 0 and r % 100 == 0:
             if action == "I":

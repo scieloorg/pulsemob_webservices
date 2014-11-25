@@ -50,6 +50,7 @@ def get_solr_args_from_article(document):
         first_author = ""
 
     args = {
+        "id": article.publisher_id,
         "code": article.publisher_id,
         "scielo_issn": article.journal.scielo_issn,
         "any_issn": article.journal.any_issn(),
@@ -84,7 +85,6 @@ def get_solr_args_from_article(document):
     article_keywords = article.keywords()
     if article_keywords is not None:
         for language in article_keywords:
-            print article_keywords[language]
             keywords = []
             for keyword in article_keywords[language]:
                 keywords.append(remove_control_chars(keyword))
