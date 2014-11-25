@@ -97,7 +97,13 @@ Running the harvest script
 	
 10. Run the harvest script to collect article data:
 	(scielobooks-env)$ cd pulsemob_webservices/pulsemob_webservices
-	(scielobooks-env)$ python -u harvest.py
+	
+# without nohup:
+	(scielobooks-env)$ python -u harvest_job.py
+	
+# with nohup:
+	(scielobooks-env)$ nohup python -u harvest_job.py &
+	(scielobooks-env)$ tail -f nohup.out
 
 	
 

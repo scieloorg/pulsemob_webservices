@@ -163,29 +163,3 @@ def harvest(article_meta_uri,
             switch_and_clean_tables(curs, data_table_name, temp_table)
         conn.commit()
     print "{0} - Process finished.".format(time.ctime())
-
-
-if __name__ == '__main__':
-    code = "S0718-34372014000100009"
-    dparams = {"code": code}
-    document = do_request(
-        "http://articlemeta.scielo.org/api/v1/article", dparams
-    )
-    if document is None:
-        doc_ret = None
-    if isinstance(document, dict):
-        doc_ret = document
-    elif isinstance(document, list):
-        if len(document) > 0:
-            doc_ret = document[0]
-        else:
-            doc_ret = None
-
-    article = Article(doc_ret)
-    print article.translated_abstracts()
-    args = solr_util.get_solr_args_from_article(doc_ret)
-    print args
-    solr_uri = "http://192.168.0.2:8983/solr/pulsemob_solr"
-    solr_conn = solr.SolrConnection(solr_uri)
-    solr_conn.add(**args)
-
