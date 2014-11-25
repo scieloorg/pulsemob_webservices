@@ -6,9 +6,8 @@ from urlparse import parse_qs
 from httmock import urlmatch, HTTMock
 import psycopg2
 import solr
-from xylose.scielodocument import Article
-from pulsemob_webservices import solr_util
-from pulsemob_webservices.harvest import harvest
+import solr_util
+from harvest import harvest
 
 
 class HarvestJobTests(unittest.TestCase):
@@ -68,34 +67,42 @@ class HarvestJobTests(unittest.TestCase):
                              "Expected: {2}".format(expected_output_file, str(sorted_operations), str(right_operations))
             )
 
+
+
+        path = os.path.dirname(os.path.realpath(__file__))
+        config = ConfigParser.ConfigParser()
+        config.read('{0}/harvest_test.cfg'.format(path))
+
+        print "Testing harvest..."
+        data_source_name = config.get("harvest", "data_source_name")
+        with psycopg2.connect(data_source_name) as conn:
+            with conn.cursor() as curs:
+                curs.execute("TRUNCATE article_test_data")
+
         with HTTMock(article_identifiers_mock, article_mock):
-            config = ConfigParser.ConfigParser()
-            config.read('harvest_test.cfg')
-
-            print "Testing harvest..."
-            data_source_name = config.get("harvest", "data_source_name")
-            with psycopg2.connect(data_source_name) as conn:
-                with conn.cursor() as curs:
-                    curs.execute("TRUNCATE article_test_data")
-
             test_using_input(config, "article_identifiers_0.json", "article_output_0.txt")
             test_using_input(config, "article_identifiers_1.json", "article_output_1.txt")
             test_using_input(config, "article_identifiers_2.json", "article_output_2.txt")
 
-            print "Testing Solr adding entries..."
-            path = os.path.dirname(os.path.realpath(__file__))
-            code = "X0718-34372014000100009"
-            doc_ret = json.loads(open('{0}/fixtures/article_{1}.json'.format(path, code)).read())
-            args = solr_util.get_solr_args_from_article(doc_ret)
-            solr_uri = config.get("harvest", "solr_uri")
-            solr_conn = solr.SolrConnection(solr_uri)
-            solr_conn.add(commit=True, **args)
-            solr_conn.commit(True, True, True)
+        print "Testing Solr adding entries..."
+        path = os.path.dirname(os.path.realpath(__file__))
+        code = "X0718-34372014000100009"
+        doc_ret = json.loads(open('{0}/fixtures/article_{1}.json'.format(path, code)).read())
+        args = solr_util.get_solr_args_from_article(doc_ret)
+        solr_uri = config.get("harvest", "solr_uri")
+        solr_conn = solr.SolrConnection(solr_uri)
+        solr_conn.add(commit=True, **args)
+        solr_conn.commit(True, True, True)
 
-            response = solr_conn.query(id=code)
-            for hit in response.results:
-                print hit
+        response = solr_conn.query(id=code)
+        for hit in response.results:
+            print hit
 
-            # print "Testing Solr delete entries..."
-            # solr_conn.delete(id="S0718-3437201400010000X")
+        # print "Testing Solr delete entries..."
+        # solr_conn.delete(id="S0718-3437201400010000X")
 
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(HarvestJobTests, 'test'))
+    return suite

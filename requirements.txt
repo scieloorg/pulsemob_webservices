@@ -1,0 +1,4 @@
+httmock==1.2.2
+psycopg2==2.5.4
+requests==2.4.3
+solrpy==0.9.6
