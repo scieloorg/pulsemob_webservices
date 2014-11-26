@@ -10,16 +10,18 @@ Before installing the SciELO Webservices, install the software listed below.
 
 Server software
 
- +----------------+----------------------------+--------------------------+
- |**software**    |**product URL**             |**Ubuntu Package name**   |
- +================+============================+==========================+
- | Python 2.7     | http://www.python.org/     | python2.7                |
- +----------------+----------------------------+--------------------------+
- | PostgreSQL     | http://www.postgresql.org/ | postgresql               |
- +----------------+----------------------------+--------------------------+
- | GIT            | http://git-scm.com/        | git-core                 |
- +----------------+----------------------------+--------------------------+
-
+ +----------------+----------------------------------+--------------------------+
+ |**software**    |**product URL**                   |**Ubuntu Package name**   |
+ +================+==================================+==========================+
+ | Python 2.7     | http://www.python.org/           | python2.7                |
+ +----------------+----------------------------------+--------------------------+
+ | PostgreSQL     | http://www.postgresql.org/       | postgresql               |
+ +----------------+----------------------------------+--------------------------+
+ | GIT            | http://git-scm.com/              | git-core                 |
+ +----------------+----------------------------------+--------------------------+
+ | Solr           | https://lucene.apache.org/solr/  | solr-tomcat or solr-jetty|
+ +----------------+----------------------------------+--------------------------+
+ 
 1. Install each package below using the recommended installation method.
 
 Note: Python comes pre-installed in most Linux distributions. If Python 2.7 is already installed, there is no need to install a newer version.
