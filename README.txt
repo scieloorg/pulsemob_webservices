@@ -10,15 +10,15 @@ Before installing the SciELO Webservices, install the software listed below.
 
 Server software
 
- +-------------------------------------+-----------------------------------+-------------------------+--------------------------+
- |**software**                         |**product URL**                    |**installation method**  |**Ubuntu Package name**   |
- +=====================================+===================================+=========================+==========================+
- | Python 2.7                          | http://www.python.org/            | OS package manager      | python2.7                |
- +-------------------------------------+-----------------------------------+-------------------------+--------------------------+
- | PostgreSQL                          | http://www.postgresql.org/        | OS package manager      | postgresql               |
- +-------------------------------------+-----------------------------------+-------------------------+--------------------------+
- | GIT                                 | http://git-scm.com/               | OS package manager      | git-core                 |
- +-------------------------------------+-----------------------------------+-------------------------+--------------------------+
+ +----------------+----------------------------+--------------------------+
+ |**software**    |**product URL**             |**Ubuntu Package name**   |
+ +================+============================+==========================+
+ | Python 2.7     | http://www.python.org/     | python2.7                |
+ +----------------+----------------------------+--------------------------+
+ | PostgreSQL     | http://www.postgresql.org/ | postgresql               |
+ +----------------+----------------------------+--------------------------+
+ | GIT            | http://git-scm.com/        | git-core                 |
+ +----------------+----------------------------+--------------------------+
 
 1. Install each package below using the recommended installation method.
 
@@ -26,16 +26,13 @@ Note: Python comes pre-installed in most Linux distributions. If Python 2.7 is a
 
 System-wide Python libraries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- +-------------------+-------------------------------------------+------------------------------------------------------------------+
- |**software**       |**product URL**                            |**installation method**                                           |
- +===================+===========================================+==================================================================+
- | pip               | http://pypi.python.org/pypi/pip           | sudo easy_install pip                                            | 
- +-------------------+-------------------------------------------+------------------------------------------------------------------+
- | virtualenv        | http://pypi.python.org/pypi/virtualenv    | sudo pip virtualenv                                              |
- +-------------------+-------------------------------------------+------------------------------------------------------------------+
- | python gfx module | http://www.swftools.org/gfx_tutorial.html | installation instruction topic 1.1  Compiling gfx and installing |
- +-------------------+-------------------------------------------+------------------------------------------------------------------+
-
+ +---------------+-------------------------------------------+------------------------+
+ |**software**   |**product URL**                            |**installation method** |
+ +===============+===========================================+========================+
+ | pip           | http://pypi.python.org/pypi/pip           | sudo easy_install pip  | 
+ +---------------+-------------------------------------------+------------------------+
+ | virtualenv    | http://pypi.python.org/pypi/virtualenv    | sudo pip virtualenv    |
+ +---------------+-------------------------------------------+------------------------+
 
  
 Install the application environment
@@ -68,8 +65,8 @@ Install the scielopulsemob services
 
 	
 
-Configuration
-----------------------
+Configure the Database and Solr
+-------------------------------
 
 5. Create a new database instance in Postgres.
 
@@ -86,8 +83,8 @@ Configuration
     (scielobooks-env)$ python -u create_database_tables.py
 
 
-Running the harvest script
-----------------------------
+Test and run the harvest script
+-------------------------------
 	
 9. Run automated tests:
 
