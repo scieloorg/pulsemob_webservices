@@ -45,8 +45,9 @@ def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepa
                 break
             for identifier in documents:
                 code = identifier['code']
+                collection = identifier['collection']
                 hash_code = identifier['processing_date'].replace("-", "")
-                text_file.write("{0},{1},{2}\n".format(code, "", hash_code))
+                text_file.write("{0}:{1},{2},{3}\n".format(code, collection, "", hash_code))
 
             page += 1
 
@@ -97,8 +98,14 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
     curs.execute("SELECT id FROM {0} WHERE action = '{1}'".format(table_name, action))
     rows = curs.fetchall()
     for r, row in enumerate(rows):
-        code = row[0]
-        dparams = {key: code}
+        identifier = row[0]
+        identifiers = identifier.split(":")
+        code = identifiers[0]
+        collection = identifiers[1]
+        dparams = {
+            key: code,
+            'collection': collection
+        }
         document = do_request(
             '{0}/{1}'.format(article_meta_uri, endpoint), dparams
         )
@@ -113,7 +120,7 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
                 doc_ret = None
 
         if doc_ret is not None:
-            add_update_entry_method(code, doc_ret, action)
+            add_update_entry_method(identifier, doc_ret, action)
         else:
             print "{0} '{1}' not found.".format(endpoint, code)
 
