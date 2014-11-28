@@ -10,17 +10,18 @@ Before installing the SciELO Webservices, install the software listed below.
 
 Server software
 
- +----------------+----------------------------------+--------------------------+
- |**software**    |**product URL**                   |**Ubuntu Package name**   |
- +================+==================================+==========================+
- | Python 2.7     | http://www.python.org/           | python2.7                |
- +----------------+----------------------------------+--------------------------+
- | PostgreSQL     | http://www.postgresql.org/       | postgresql               |
- +----------------+----------------------------------+--------------------------+
- | GIT            | http://git-scm.com/              | git-core                 |
- +----------------+----------------------------------+--------------------------+
- | Solr           | https://lucene.apache.org/solr/  | solr-tomcat or solr-jetty|
- +----------------+----------------------------------+--------------------------+
+ +----------------+----------------------------------+-----------------------------------------------+
+ |**software**    |**product URL**                   |**installation instructions (for CentOS)**     |
+ +================+==================================+===============================================+
+ | Python 2.7     | http://www.python.org/           | -                                             |
+ +----------------+----------------------------------+-----------------------------------------------+
+ | PostgreSQL     | http://www.postgresql.org/       | yum install postgresql                        | +----------------|----------------------------------+-----------------------------------------------+
+ | PostgreSQL Dev | http://www.postgresql.org/       | yum install postgresql-devel                  |
+ +----------------+----------------------------------+-----------------------------------------------+
+ | GIT            | http://git-scm.com/              | yum install git-core                          |
+ +----------------+----------------------------------+-----------------------------------------------+
+ | Solr           | https://lucene.apache.org/solr/  | See https://github.com/Infobase/pulsemob_solr |
+ +----------------+----------------------------------+-----------------------------------------------+
  
 1. Install each package below using the recommended installation method.
 
@@ -103,13 +104,3 @@ Test and run the harvest script
 # with nohup:
 	(scielobooks-env)$ nohup python -u harvest_job.py &
 	(scielobooks-env)$ tail -f nohup.out
-
-	
-
-Troubleshooting
----------------
-
-For CentOS Linux we needed to install postgresql-devel as below:
-
-    $ yum install postgresql-devel
-
