@@ -34,13 +34,13 @@ Note: Python comes pre-installed in most Linux distributions. If Python 2.7 is a
 
 System-wide Python libraries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- +---------------+-------------------------------------------+------------------------+
- |**software**   |**product URL**                            |**installation method** |
- +===============+===========================================+========================+
- | pip           | http://pypi.python.org/pypi/pip           | sudo easy_install pip  | 
- +---------------+-------------------------------------------+------------------------+
- | virtualenv    | http://pypi.python.org/pypi/virtualenv    | sudo pip virtualenv    |
- +---------------+-------------------------------------------+------------------------+
+ +---------------+-------------------------------------------+-----------------------------+
+ |**software**   |**product URL**                            |**installation method**      |
+ +===============+===========================================+=============================+
+ | pip           | http://pypi.python.org/pypi/pip           | sudo easy_install pip       | 
+ +---------------+-------------------------------------------+-----------------------------+
+ | virtualenv    | http://pypi.python.org/pypi/virtualenv    | sudo pip install virtualenv |
+ +---------------+-------------------------------------------+-----------------------------+
 
  
 Install the application environment
@@ -59,17 +59,13 @@ Install the application environment
 Install the scielopulsemob services
 -----------------------------------
 
-3. Go to a suitable installation directory, download and install xylose library and checkout the scielopulsemob services source.
+3. Go to a suitable installation directory and checkout the scielopulsemob services source.
 
-	(scielobooks-env)$ git clone https://github.com/scieloorg/xylose.git
-	(scielobooks-env)$ cd xylose
-	(scielobooks-env)$ python setup.py install
-	(scielobooks-env)$ cd ..
     (scielopulsemob-env)$ git clone git://github.com/Infobase/pulsemob_webservices.git
 
 4. With the `scielopulsemob-env` environment active, use `pip` to download and install the dependencies.
 
-    (scielobooks-env)$ pip install -r pulsemob_webservices/requirements.txt
+    (scielopulsemob-env)$ pip install -r pulsemob_webservices/requirements.txt
 
 	
 
@@ -80,15 +76,20 @@ Configure the Database and Solr
 
 6. Create a new colletion in Solr.
 
-7. Change the configuration files below accordingly database and solr instances:
+7. Change the configuration files accordingly database and solr instances
 
-	pulsemob_webservices/pulsemob_webservices/harvest.cfg
-	pulsemob_webservices/pulsemob_webservices/tests/harvest_test.cfg
+	The configuration files are listed below. The last one will be used for automated tests.
+
+		pulsemob_webservices/pulsemob_webservices/harvest.cfg
+		pulsemob_webservices/pulsemob_webservices/tests/harvest_test.cfg
+	
+	The parameter "data_source_name" can be the same for both configuration files.
+	The parameter "pg_shared_folder_input" is any folder visible by PostgreSQL and "pg_shared_folder_output" can be this same folder or a link to this folder. The user running the application must have write permission on this folder.
 
 8. Create the database tables:
 
-	(scielobooks-env)$ cd pulsemob_webservices/pulsemob_webservices
-    (scielobooks-env)$ python -u create_database_tables.py
+	(scielopulsemob-env)$ cd pulsemob_webservices/pulsemob_webservices
+    (scielopulsemob-env)$ python -u create_database_tables.py
 
 
 Test and run the harvest script
@@ -96,16 +97,16 @@ Test and run the harvest script
 	
 9. Run automated tests:
 
-	(scielobooks-env)$ cd pulsemob_webservices/pulsemob_webservices
-    (scielobooks-env)$ python -u run_tests.py
+	(scielopulsemob-env)$ cd pulsemob_webservices/pulsemob_webservices
+    (scielopulsemob-env)$ python -u run_tests.py
 
 	
 10. Run the harvest script to collect article data:
-	(scielobooks-env)$ cd pulsemob_webservices/pulsemob_webservices
+	(scielopulsemob-env)$ cd pulsemob_webservices/pulsemob_webservices
 	
 # without nohup:
-	(scielobooks-env)$ python -u harvest_job.py
+	(scielopulsemob-env)$ python -u harvest_job.py
 	
 # with nohup:
-	(scielobooks-env)$ nohup python -u harvest_job.py &
-	(scielobooks-env)$ tail -f nohup.out
+	(scielopulsemob-env)$ nohup python -u harvest_job.py &
+	(scielopulsemob-env)$ tail -f nohup.out

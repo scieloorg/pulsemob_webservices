@@ -1,14 +1,12 @@
 # coding: utf-8
-import time
-import traceback
-import solr
 
 __author__ = 'jociel'
 
+import logging
+import time
 import requests
 import psycopg2
-from xylose.scielodocument import Journal, Article
-import solr_util
+from xylose.scielodocument import Journal
 
 
 def do_request(url, params):
@@ -17,12 +15,12 @@ def do_request(url, params):
             response = requests.get(url, params=params).json()
             break
         except Exception as ex:
-            print "An error has occurred trying to do an url request. " \
-                  "The used url and parameters and the traceback are below:"
-            print url
-            print params
-            traceback.print_exc()
-            print "Sleeping for 1 minute to try again..."
+            logging.error("An error has occurred trying to do an url request. " \
+                          "The used url and parameters and the traceback are below:")
+            logging.error(url)
+            logging.error(params)
+            logging.exception(ex)
+            logging.error("Sleeping for 1 minute to try again...")
             time.sleep(60)
 
     return response
@@ -34,8 +32,8 @@ def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepa
         while True:
             if page_limit is not None and page >= page_limit:
                 break
-            print '{0} - Extracting articles from webservice (page {1})...'.format(time.ctime(), page)
-            params = {'offset': page*1000}
+            logging.info('Extracting articles from webservice (page {0})...'.format(page))
+            params = {'offset': page * 1000}
             identifiers = do_request(
                 '{0}/article/identifiers'.format(article_meta_uri),
                 params
@@ -53,7 +51,7 @@ def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepa
 
 
 def extract_data_from_journal_webservice_to_file(article_meta_uri, output_filepath):
-    print '{0} - Extracting journals from webservice...'.format(time.ctime())
+    logging.info('Extracting journals from webservice...')
     with open(output_filepath, "w") as text_file:
         documents = do_request(
             '{0}/{1}'.format(article_meta_uri, 'journal'),
@@ -66,29 +64,33 @@ def extract_data_from_journal_webservice_to_file(article_meta_uri, output_filepa
 
 
 def store_and_process_data_from_file(curs, input_filepath, data_table, temp_table):
-    print "{0} - Processing data...".format(time.ctime())
+    logging.info("Processing data...")
     curs.execute("TRUNCATE {0}".format(temp_table))
     curs.execute("COPY {0} FROM '{1}' USING DELIMITERS ',' CSV".format(temp_table, input_filepath))
-    curs.execute("UPDATE {0} a SET action='D' WHERE NOT EXISTS (SELECT 1 FROM {1} WHERE id = a.id)".format(data_table, temp_table))
-    curs.execute("UPDATE {0} a SET action='I' WHERE NOT EXISTS (SELECT 1 FROM {1} WHERE id = a.id)".format(temp_table, data_table))
-    curs.execute("UPDATE {0} a SET action='U' WHERE EXISTS (SELECT 1 FROM {1} WHERE id = a.id AND hash_code != a.hash_code)".format(temp_table, data_table))
+    curs.execute("UPDATE {0} a SET action='D' WHERE NOT EXISTS (SELECT 1 FROM {1} WHERE id = a.id)".format(data_table,
+                                                                                                           temp_table))
+    curs.execute("UPDATE {0} a SET action='I' WHERE NOT EXISTS (SELECT 1 FROM {1} WHERE id = a.id)".format(temp_table,
+                                                                                                           data_table))
+    curs.execute(
+        "UPDATE {0} a SET action='U' WHERE EXISTS (SELECT 1 FROM {1} WHERE id = a.id AND hash_code != a.hash_code)".format(
+            temp_table, data_table))
 
 
 def delete_entries(curs, table_name, delete_entry_method):
-    print "{0} - Deleting entries...".format(time.ctime())
+    logging.info("Deleting entries...")
     curs.execute("SELECT id FROM {0} WHERE action = 'D'".format(table_name))
     rows = curs.fetchall()
     for row in rows:
         delete_entry_method(row[0])
 
-    print "{0} - {1} entries deleted.".format(time.ctime(), len(rows))
+    logging.info("{0} entries deleted.".format(len(rows)))
 
 
 def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_entry_method, action):
     if action == "I":
-        print "{0} - Adding entries...".format(time.ctime())
+        logging.info("Adding entries...")
     elif action == "U":
-        print "{0} - Updating entries...".format(time.ctime())
+        logging.info("Updating entries...")
 
     if endpoint == 'article':
         key = 'code'
@@ -122,18 +124,18 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
         if doc_ret is not None:
             add_update_entry_method(identifier, doc_ret, action)
         else:
-            print "{0} '{1}' not found.".format(endpoint, code)
+            logging.info("{0} '{1}' not found.".format(endpoint, code))
 
         if r != 0 and r % 100 == 0:
             if action == "I":
-                print "{0} - {1} entries added... continuing...".format(time.ctime(), r)
+                logging.info("{0} entries added... continuing...".format(r))
             elif action == "U":
-                print "{0} - {1} entries updated... continuing...".format(time.ctime(), r)
+                logging.info("{0} entries updated... continuing...".format(r))
 
     if action == "I":
-        print "{0} - {1} entries added.".format(time.ctime(), len(rows))
+        logging.info("{0} entries added.".format(len(rows)))
     elif action == "U":
-        print "{0} - {1} entries updated.".format(time.ctime(), len(rows))
+        logging.info("{0} entries updated.".format(len(rows)))
 
 
 def switch_and_clean_tables(curs, data_table_name, temp_table):
@@ -169,4 +171,4 @@ def harvest(article_meta_uri,
             add_update_entries(curs, temp_table, article_meta_uri, endpoint, add_update_entry, "U")
             switch_and_clean_tables(curs, data_table_name, temp_table)
         conn.commit()
-    print "{0} - Process finished.".format(time.ctime())
+    logging.info("{0} - Process finished.".format(time.ctime()))

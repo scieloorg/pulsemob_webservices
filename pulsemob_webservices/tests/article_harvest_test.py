@@ -1,12 +1,14 @@
+# coding: utf-8
+
+__author__ = 'jociel'
+
 import ConfigParser
-import json
+import logging
 import unittest
 import os
 from urlparse import parse_qs
 from httmock import urlmatch, HTTMock
 import psycopg2
-import solr
-import solr_util
 from harvest import harvest
 
 
@@ -37,10 +39,10 @@ class HarvestJobTests(unittest.TestCase):
             return result
 
         def delete_article_entry(id):
-            self.operations.append("D,{0}".format(id))
+            self.operations.append(u"D,{0}".format(id))
 
         def add_update_article_entry(id, document, action):
-            self.operations.append("{0},{1}".format(action, id))
+            self.operations.append(u"{0},{1}".format(action, id))
 
         def test_using_input(config, input_file, expected_output_file):
             self.input_file = input_file
@@ -73,7 +75,7 @@ class HarvestJobTests(unittest.TestCase):
         config = ConfigParser.ConfigParser()
         config.read('{0}/harvest_test.cfg'.format(path))
 
-        print "Testing harvest..."
+        logging.info("Testing harvest...")
         data_source_name = config.get("harvest", "data_source_name")
         with psycopg2.connect(data_source_name) as conn:
             with conn.cursor() as curs:
@@ -83,23 +85,6 @@ class HarvestJobTests(unittest.TestCase):
             test_using_input(config, "article_identifiers_0.json", "article_output_0.txt")
             test_using_input(config, "article_identifiers_1.json", "article_output_1.txt")
             test_using_input(config, "article_identifiers_2.json", "article_output_2.txt")
-
-        print "Testing Solr adding entries..."
-        path = os.path.dirname(os.path.realpath(__file__))
-        code = "X0718-34372014000100009"
-        doc_ret = json.loads(open('{0}/fixtures/article_{1}.json'.format(path, code)).read())
-        args = solr_util.get_solr_args_from_article(doc_ret)
-        solr_uri = config.get("harvest", "solr_uri")
-        solr_conn = solr.SolrConnection(solr_uri)
-        solr_conn.add(commit=True, **args)
-        solr_conn.commit(True, True, True)
-
-        response = solr_conn.query(id=code)
-        for hit in response.results:
-            print hit
-
-        # print "Testing Solr delete entries..."
-        # solr_conn.delete(id="S0718-3437201400010000X")
 
 
 def suite():
