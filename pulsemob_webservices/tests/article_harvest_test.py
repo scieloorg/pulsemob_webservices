@@ -9,7 +9,7 @@ import os
 from urlparse import parse_qs
 from httmock import urlmatch, HTTMock
 import psycopg2
-from harvest import harvest
+from pulsemob_webservices.harvest import harvest
 
 
 class HarvestJobTests(unittest.TestCase):

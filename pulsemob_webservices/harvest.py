@@ -26,7 +26,7 @@ def do_request(url, params):
     return response
 
 
-def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepath, page_limit=None):
+def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepath, page_limit=30):
     with open(output_filepath, "w") as text_file:
         page = 0
         while True:

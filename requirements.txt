@@ -1,5 +1,16 @@
+Django==1.7.2
+Markdown==2.5.2
+django-cors-headers==1.0.0
+django-filter==0.9.1
+django-pylibmc==0.5.0
+djangorestframework==3.0.2
 httmock==1.2.2
 psycopg2==2.5.4
+pyasn1==0.1.7
+pyasn1-modules==0.0.5
+python-memcached==1.53
 requests==2.4.3
+rsa==3.1.4
+six==1.9.0
 solrpy==0.9.6
 -e git+git://github.com/scieloorg/xylose.git#egg=xylose
