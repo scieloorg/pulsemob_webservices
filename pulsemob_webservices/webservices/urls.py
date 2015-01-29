@@ -9,6 +9,7 @@ import Queue
 import threading
 import sys
 import services
+import ast
 from settings import *
 
 # no debug for us
@@ -42,69 +43,74 @@ def get_user_by_header_request(request):
 
 # Login function.
 def login(self):
-    if self.method == 'POST':
-        email = self.POST.get('email', None)
-        name = self.POST.get('name', None)
-        language = self.POST.get('language', None)
-        font_size = self.POST.get('font_size', None)
+    try:
+        if self.method == 'POST':
+            data = json.loads(self.body)
+            email = data.get('email', None)
+            name = data.get('name', None)
+            language = data.get('language', None)
+            font_size = data.get('font_size', None)
+            print ("Data loaded.")
 
-        facebook_id = self.META.get('HTTP_FACEBOOKID', None)
-        google_id = self.META.get('HTTP_GOOGLEID', None)
+            facebook_id = self.META.get('HTTP_FACEBOOKID', None)
+            google_id = self.META.get('HTTP_GOOGLEID', None)
 
-        # Try get by email. If the result is empty or has length > 1, user = None for now.
-        if email is not None:
-            try:
-                user = User.objects.get(email=email)
-            except User.DoesNotExist:
-                user = None
-            # Unnecessary because I never update email field.
-            # except User.MultipleObjectsReturned:
-            #     if facebook_id is not None:
-            #         user = User.objects.get(email=email, facebook_id=facebook_id)
-            #     elif google_id is not None:
-            #         user = User.objects.get(email=email, google_id=google_id)
-
-        # If email or user is None, try to get by social id.
-        if email is None or user is None:
-            if facebook_id is not None:
+            # Try get by email. If the result is empty or has length > 1, user = None for now.
+            if email is not None:
                 try:
-                    user = User.objects.get(facebook_id=facebook_id)
+                    user = User.objects.get(email=email)
                 except User.DoesNotExist:
                     user = None
-            elif google_id is not None:
-                try:
-                    user = User.objects.get(google_id=google_id)
-                except User.DoesNotExist:
-                    user = None
+                # Unnecessary because I never update email field.
+                # except User.MultipleObjectsReturned:
+                #     if facebook_id is not None:
+                #         user = User.objects.get(email=email, facebook_id=facebook_id)
+                #     elif google_id is not None:
+                #         user = User.objects.get(email=email, google_id=google_id)
 
-        if user is None:
-            user = User(None, None, None, email, name, facebook_id, google_id, language, font_size)
-            user.save()
+            # If email or user is None, try to get by social id.
+            if email is None or user is None:
+                if facebook_id is not None:
+                    try:
+                        user = User.objects.get(facebook_id=facebook_id)
+                    except User.DoesNotExist:
+                        user = None
+                elif google_id is not None:
+                    try:
+                        user = User.objects.get(google_id=google_id)
+                    except User.DoesNotExist:
+                        user = None
+
+            if user is None:
+                user = User(None, None, None, email, name, facebook_id, google_id, language, font_size)
+                user.save()
+            else:
+                if user.facebook_id is None and facebook_id is not None:
+                    user.facebook_id = facebook_id
+                    user.save()
+                elif user.google_id is None and google_id is not None:
+                    user.google_id = google_id
+                    user.save()
+
+            response = dict()
+            response['user'] = user.to_dict()
+            response['solr_version'] = services.solr_repository_version()
+            response['feed_exclusions'] = list(UserFeedExclusion.objects.values_list('feed_id', flat=True).filter(user=user))
+
+            publications_feeds_exclusions = list(UserPublicationFeedExclusion.objects.filter(user_id=user.id))
+            print (publications_feeds_exclusions)
+            list_publications_feeds_exclusions = []
+            for publications_feeds_exclusion in publications_feeds_exclusions:
+                list_publications_feeds_exclusions.append({'feed_id': publications_feeds_exclusion.feed.id,
+                                                           'publication_id': publications_feeds_exclusion.publication.id})
+
+            response['publication_feed_exclusions'] = list_publications_feeds_exclusions
+
+            return HttpResponse(json.dumps(response), status=200, content_type="application/json")
         else:
-            if user.facebook_id is None and facebook_id is not None:
-                user.facebook_id = facebook_id
-                user.save()
-            elif user.google_id is None and google_id is not None:
-                user.google_id = google_id
-                user.save()
-
-        response = dict()
-        response['user'] = user.to_dict()
-        response['solr_version'] = services.solr_repository_version()
-        response['feed_exclusions'] = list(UserFeedExclusion.objects.values_list('feed_id', flat=True).filter(user=user))
-
-        publications_feeds_exclusions = list(UserPublicationFeedExclusion.objects.filter(user_id=user.id))
-        print (publications_feeds_exclusions)
-        list_publications_feeds_exclusions = []
-        for publications_feeds_exclusion in publications_feeds_exclusions:
-            list_publications_feeds_exclusions.append({'feed_id': publications_feeds_exclusion.feed.id,
-                                                       'publication_id': publications_feeds_exclusion.publication.id})
-
-        response['publication_feed_exclusions'] = list_publications_feeds_exclusions
-
-        return HttpResponse(json.dumps(response), status=200, content_type="application/json")
-    else:
-        return HttpResponse('', status=405)
+            return HttpResponse('', status=405)
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
 
 
 def home(self):
@@ -152,7 +158,7 @@ def home(self):
         return HttpResponse('', status=405)
 
 
-def favorite(self):
+def read_favorite(self):
     if self.method == 'GET':
         user = get_user_by_header_request(self)
         user_id = user.id
@@ -165,17 +171,24 @@ def favorite(self):
 
 def create_favorite(self):
     if self.method == 'POST':
-        user = get_user_by_header_request(self)
-        user_id = user.id
-        article_id = self.POST['article_id']
-
         try:
-            UserFavorite.objects.get(user_id=user_id, article_id=article_id)
-        except UserFavorite.DoesNotExist:
-            user_favorite = UserFavorite(None, user_id, article_id)
-            user_favorite.save()
+            user = get_user_by_header_request(self)
+            user_id = user.id
+            data = json.loads(self.body)
+            article_id = data.get('article_id', None)
 
-        return HttpResponse('', status=200)
+            if article_id is None:
+                return HttpResponse('You should provide article_id parameter.', status=400)
+
+            try:
+                UserFavorite.objects.get(user_id=user_id, article_id=article_id)
+            except UserFavorite.DoesNotExist:
+                user_favorite = UserFavorite(None, user_id, article_id)
+                user_favorite.save()
+
+            return HttpResponse(json.dumps({}), status=200)
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
     else:
         return HttpResponse('', status=405)
 
@@ -184,7 +197,8 @@ def delete_favorite(self):
     if self.method == 'POST':
         user = get_user_by_header_request(self)
         user_id = user.id
-        article_id = self.POST['article_id']
+        data = json.loads(self.body)
+        article_id = data.get('article_id', None)
 
         try:
             user_favorite = UserFavorite.objects.get(user_id=user_id, article_id=article_id)
@@ -192,25 +206,28 @@ def delete_favorite(self):
         except UserFavorite.DoesNotExist:
             pass
 
-        return HttpResponse('', status=200)
+        return HttpResponse(json.dumps({}), status=200)
     else:
         return HttpResponse('', status=405)
 
 
 def read_favorite(self):
     if self.method == 'GET':
-        user = get_user_by_header_request(self)
-        user_id = user.id
+        try:
+            user = get_user_by_header_request(self)
+            user_id = user.id
 
-        if user_id is None:
-            return HttpResponse('', status=400)
+            if user_id is None:
+                return HttpResponse('', status=400)
 
-        article_ids = []
-        user_favorites = UserFavorite.objects.filter(user_id=user_id)
-        for user_favorite in user_favorites:
-            article_ids.append(user_favorite.article_id)
+            article_ids = []
+            user_favorites = UserFavorite.objects.filter(user_id=user_id)
+            for user_favorite in user_favorites:
+                article_ids.append(user_favorite.article_id)
 
-        return HttpResponse(json.dumps(article_ids), status=200)
+            return HttpResponse(json.dumps(article_ids), status=200)
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
     else:
         return HttpResponse('', status=405)
 
@@ -219,7 +236,8 @@ def create_feed_exclusion(self):
     if self.method == 'POST':
         user = get_user_by_header_request(self)
         user_id = user.id
-        feed_id = self.POST.get('feed_id', None)
+        data = json.loads(self.body)
+        feed_id = data.get('feed_id', None)
 
         if feed_id is None:
             return HttpResponse('You should provide feed_id parameter.', status=400)
@@ -230,7 +248,7 @@ def create_feed_exclusion(self):
             user_feed_exclusion = UserFeedExclusion(None, user_id, feed_id)
             user_feed_exclusion.save()
 
-        return HttpResponse('', status=200)
+        return HttpResponse(json.dumps({}), status=200)
     else:
         return HttpResponse('', status=405)
 
@@ -239,7 +257,8 @@ def delete_feed_exclusion(self):
     if self.method == 'POST':
         user = get_user_by_header_request(self)
         user_id = user.id
-        feed_id = self.POST.get('feed_id', None)
+        data = json.loads(self.body)
+        feed_id = data.get('feed_id', None)
 
         if feed_id is None:
             return HttpResponse('You should provide feed_id parameter.', status=400)
@@ -250,7 +269,7 @@ def delete_feed_exclusion(self):
         except UserFeedExclusion.DoesNotExist:
             pass
 
-        return HttpResponse('', status=200)
+        return HttpResponse(json.dumps({}), status=200)
     else:
         return HttpResponse('', status=405)
 
@@ -259,8 +278,9 @@ def create_feed_publication_exclusion(self):
     if self.method == 'POST':
         user = get_user_by_header_request(self)
         user_id = user.id
-        feed_id = self.POST.get('feed_id', None)
-        publication_id = self.POST.get('publication_id', None)
+        data = json.loads(self.body)
+        feed_id = data.get('feed_id', None)
+        publication_id = data.get('publication_id', None)
 
         if feed_id is None or publication_id is None:
             return HttpResponse('You should provide feed_id and publication_id parameters.', status=400)
@@ -271,7 +291,7 @@ def create_feed_publication_exclusion(self):
             user_feed__publication_exclusion = UserPublicationFeedExclusion(None, user_id, publication_id, feed_id)
             user_feed__publication_exclusion.save()
 
-        return HttpResponse('', status=200)
+        return HttpResponse(json.dumps({}), status=200)
     else:
         return HttpResponse('', status=405)
 
@@ -280,8 +300,9 @@ def delete_feed_publication_exclusion(self):
     if self.method == 'POST':
         user = get_user_by_header_request(self)
         user_id = user.id
-        feed_id = self.POST.get('feed_id', None)
-        publication_id = self.POST.get('publication_id', None)
+        data = json.loads(self.body)
+        feed_id = data.get('feed_id', None)
+        publication_id = data.get('publication_id', None)
 
         if feed_id is None or publication_id is None:
             return HttpResponse('You should provide feed_id and publication_id parameters.', status=400)
@@ -292,7 +313,7 @@ def delete_feed_publication_exclusion(self):
         except UserPublicationFeedExclusion.DoesNotExist:
             pass
 
-        return HttpResponse('', status=200)
+        return HttpResponse(json.dumps({}), status=200)
     else:
         return HttpResponse('', status=405)
 
@@ -312,7 +333,8 @@ def read_user(self):
 def user_change_language(self):
     if self.method == 'POST':
         user = get_user_by_header_request(self)
-        language = self.POST.get('language', None)
+        data = json.loads(self.body)
+        language = data.get('language', None)
 
         if language is None:
             return HttpResponse('You should provide language parameter: PT, EN or ES.', status=400)
@@ -323,7 +345,7 @@ def user_change_language(self):
         user.language = language
         user.save()
 
-        return HttpResponse('', status=200)
+        return HttpResponse(json.dumps({}), status=200)
 
     else:
         return HttpResponse('', status=405)
@@ -332,7 +354,8 @@ def user_change_language(self):
 def user_change_font_size(self):
     if self.method == 'POST':
         user = get_user_by_header_request(self)
-        font_size = self.POST.get('font_size', None)
+        data = json.loads(self.body)
+        font_size = data.get('font_size', None)
 
         if font_size is None:
             return HttpResponse('You should provide font_size parameter: S, M or L.', status=400)
@@ -342,7 +365,7 @@ def user_change_font_size(self):
 
         user.font_size = font_size
         user.save()
-        return HttpResponse('', status=200)
+        return HttpResponse(json.dumps({}), status=200)
 
     else:
         return HttpResponse('', status=405)
@@ -383,7 +406,7 @@ urlpatterns = [
     url(r'^home', home),
 
     url(r'^favorite/create', create_favorite),
-    url(r'^favorite/read', favorite),
+    url(r'^favorite/read', read_favorite),
     url(r'^favorite/delete', delete_favorite),
 
     url(r'^feed/publications/list', list_feed_publications),

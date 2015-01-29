@@ -47,7 +47,13 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
-    ]
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    )
 }
 
 MIDDLEWARE_CLASSES = (
@@ -72,11 +78,11 @@ WSGI_APPLICATION = 'webservices.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'pulsemob',
-        'PASSWORD': 'K7C3POR2D2',
-        'HOST': '192.168.0.2',
-        'PORT': '5432',
+        'NAME': '', # update
+        'USER': '', # update
+        'PASSWORD': '', # update
+        'HOST': '', # update
+        'PORT': '', # update
     }
 }
 
@@ -95,7 +101,7 @@ CORS_ALLOW_HEADERS = (
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '192.168.0.2:11211',
+        'LOCATION': '0.0.0.0:port', # update
     }
 }
 
