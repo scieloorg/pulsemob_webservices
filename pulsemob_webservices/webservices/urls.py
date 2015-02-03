@@ -402,11 +402,23 @@ def list_feed_publications(self):
         return HttpResponse('', status=405)
 
 
+def solr_version(self):
+    if self.method == 'GET':
+        try:
+            return HttpResponse(json.dumps(services.solr_repository_version()), status=200)
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
+            raise
+    else:
+        return HttpResponse('', status=405)
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^login', login),
     url(r'^home', home),
+
+    url(r'^solr/version', solr_version),
 
     url(r'^favorite/create', create_favorite),
     url(r'^favorite/read', read_favorite),
