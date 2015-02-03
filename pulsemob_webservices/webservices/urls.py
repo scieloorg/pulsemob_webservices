@@ -50,7 +50,6 @@ def login(self):
             name = data.get('name', None)
             language = data.get('language', None)
             font_size = data.get('font_size', None)
-            print ("Data loaded.")
 
             facebook_id = self.META.get('HTTP_FACEBOOKID', None)
             google_id = self.META.get('HTTP_GOOGLEID', None)
@@ -95,14 +94,18 @@ def login(self):
             response = dict()
             response['user'] = user.to_dict()
             response['solr_version'] = services.solr_repository_version()
-            response['feed_exclusions'] = list(UserFeedExclusion.objects.values_list('feed_id', flat=True).filter(user=user))
+            response['feed_exclusions'] = list(UserFeedExclusion.objects.values_list('feed_id', flat=True)
+                                               .filter(user=user))
+            response['favorites'] = list(UserFavorite.objects.values_list('article_id', flat=True).filter(user=user))
 
             publications_feeds_exclusions = list(UserPublicationFeedExclusion.objects.filter(user_id=user.id))
             print (publications_feeds_exclusions)
-            list_publications_feeds_exclusions = []
+            list_publications_feeds_exclusions = {}
             for publications_feeds_exclusion in publications_feeds_exclusions:
-                list_publications_feeds_exclusions.append({'feed_id': publications_feeds_exclusion.feed.id,
-                                                           'publication_id': publications_feeds_exclusion.publication.id})
+                if publications_feeds_exclusion.feed.id not in list_publications_feeds_exclusions:
+                    list_publications_feeds_exclusions[publications_feeds_exclusion.feed.id] = []
+                list_publications_feeds_exclusions[publications_feeds_exclusion.feed.id].\
+                    append(publications_feeds_exclusion.publication.id)
 
             response['publication_feed_exclusions'] = list_publications_feeds_exclusions
 

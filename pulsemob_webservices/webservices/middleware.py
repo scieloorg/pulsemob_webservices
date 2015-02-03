@@ -20,14 +20,14 @@ class RequestMiddleware(object):
 
         value = mc.get(token)
         if value:
-            # print ('Token was found in cache.')
+            print ('Token was found in cache.')
             # print (value, google_id)
             if google_id is not None and not value == google_id:
                 return HttpResponse('This access token is related to another user.', status=401)
             else:
                 return None
 
-        # print('Token was not found in cache.')
+        print('Token was not found in cache.')
 
         if facebook_id is not None:
             response = requests.get("https://graph.facebook.com/me", params={'id': facebook_id, 'access_token': token})
