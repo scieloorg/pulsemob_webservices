@@ -24,7 +24,7 @@ class User (models.Model):
     id = models.AutoField(primary_key=True)
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
-    email = models.CharField(max_length=255, null=True)
+    email = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255)
     facebook_id = models.CharField(max_length=255, null=True)
     google_id = models.CharField(max_length=255, null=True)

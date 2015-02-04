@@ -342,7 +342,7 @@ def user_change_language(self):
         if language is None:
             return HttpResponse('You should provide language parameter: PT, EN or ES.', status=400)
 
-        if not language == 'PT' and not language == 'EN' and not language == 'ES':
+        if not language == 'pt' and not language == 'en' and not language == 'es':
             return HttpResponse('Malformed syntax in language parameter.', status=400)
 
         user.language = language
