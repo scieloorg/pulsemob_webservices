@@ -365,9 +365,9 @@ def list_feed_publications(self):
         try:
             response = dict()
 
-            order_en = list(Feed.objects.all().order_by('feed_name_en').values_list('feed_id', flat=True))
-            order_pt = list(Feed.objects.all().order_by('feed_name_pt').values_list('feed_id', flat=True))
-            order_es = list(Feed.objects.all().order_by('feed_name_es').values_list('feed_id', flat=True))
+            order_en = list(Feed.objects.all().order_by('feed_name_en').values_list('id', flat=True))
+            order_pt = list(Feed.objects.all().order_by('feed_name_pt').values_list('id', flat=True))
+            order_es = list(Feed.objects.all().order_by('feed_name_es').values_list('id', flat=True))
 
             response['order_en'] = order_en
             response['order_pt'] = order_pt
