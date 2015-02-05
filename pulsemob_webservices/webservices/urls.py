@@ -22,7 +22,6 @@ def get_user_by_header_request(request):
 
     if facebook_id is not None:
         try:
-            print('Getting by ', facebook_id)
             user = User.objects.get(facebook_id=facebook_id)
             return user
         except User.DoesNotExist:
@@ -60,12 +59,6 @@ def login(self):
                     user = User.objects.get(email=email)
                 except User.DoesNotExist:
                     user = None
-                # Unnecessary because I never update email field.
-                # except User.MultipleObjectsReturned:
-                #     if facebook_id is not None:
-                #         user = User.objects.get(email=email, facebook_id=facebook_id)
-                #     elif google_id is not None:
-                #         user = User.objects.get(email=email, google_id=google_id)
 
             # If email or user is None, try to get by social id.
             if email is None or user is None:
@@ -99,7 +92,6 @@ def login(self):
             response['favorites'] = list(UserFavorite.objects.values_list('article_id', flat=True).filter(user=user))
 
             publications_feeds_exclusions = list(UserPublicationFeedExclusion.objects.filter(user_id=user.id))
-            print (publications_feeds_exclusions)
             list_publications_feeds_exclusions = {}
             for publications_feeds_exclusion in publications_feeds_exclusions:
                 if publications_feeds_exclusion.feed.id not in list_publications_feeds_exclusions:
@@ -117,48 +109,63 @@ def login(self):
 
 
 def home(self):
-    if self.method == 'GET':
-        user = get_user_by_header_request(self)
-        user_id = user.id
+    try:
+        if self.method == 'GET':
+            user = get_user_by_header_request(self)
+            user_id = user.id
 
-        feeds = list(Feed.objects.all())
-        feed_exclusions = list(UserFeedExclusion.objects.filter(user_id=user_id).values_list('feed_id', flat=True))
+            if user.language == 'en':
+                order = list(Feed.objects.order_by('feed_name_en').all().values_list('id', flat=True))
+            elif user.language == 'pt':
+                order = list(Feed.objects.order_by('feed_name_pt').all().values_list('id', flat=True))
+            else:
+                order = list(Feed.objects.order_by('feed_name_es').all().values_list('id', flat=True))
 
-        publication_feed_exclusions_aux = UserPublicationFeedExclusion.objects.filter(user_id=user_id)
-        publication_feed_exclusions_dict = {}
+            feeds = list(Feed.objects.all())
+            feed_exclusions = list(UserFeedExclusion.objects.filter(user_id=user_id).values_list('feed_id', flat=True))
 
-        for pfea in publication_feed_exclusions_aux:
-            if pfea.feed.id not in publication_feed_exclusions_dict:
-                publication_feed_exclusions_dict[pfea.feed.id] = []
+            publication_feed_exclusions_aux = UserPublicationFeedExclusion.objects.filter(user_id=user_id)
+            publication_feed_exclusions_dict = {}
 
-            publication_feed_exclusions_dict[pfea.feed.id].append(pfea.publication.id)
+            for pfea in publication_feed_exclusions_aux:
+                if pfea.feed.id not in publication_feed_exclusions_dict:
+                    publication_feed_exclusions_dict[pfea.feed.id] = []
 
-        q = Queue.Queue()
+                publication_feed_exclusions_dict[pfea.feed.id].append(pfea.publication.id)
 
-        count_calls = 0
-        for feed in feeds:
-            if feed.id not in feed_exclusions:
-                count_calls += 1
-                if feed.id in publication_feed_exclusions_dict:
-                    t = threading.Thread(target=services.article_find_by_feed_id_and_not_publication_id,
-                                         args=(feed.id, publication_feed_exclusions_dict[feed.id], q))
-                else:
-                    t = threading.Thread(target=services.article_find_by_feed_id, args=(feed.id, q))
+            q = Queue.Queue()
 
-                t.daemon = True
-                t.start()
+            count_calls = 0
+            for feed in feeds:
+                if feed.id not in feed_exclusions:
+                    count_calls += 1
+                    if feed.id in publication_feed_exclusions_dict:
+                        t = threading.Thread(target=services.article_find_by_feed_id_and_not_publication_id,
+                                             args=(feed.id, publication_feed_exclusions_dict[feed.id], q))
+                    else:
+                        t = threading.Thread(target=services.article_find_by_feed_id, args=(feed.id, q))
 
-        response = []
+                    t.daemon = True
+                    t.start()
 
-        i = 0
-        while i < count_calls:
-            s = q.get()
-            response.append(s)
-            i += 1
+            response_aux = dict()
 
-        return HttpResponse(json.dumps(response), status=200, content_type="application/json")
-    else:
-        return HttpResponse('', status=405)
+            i = 0
+            while i < count_calls:
+                s = q.get()
+                response_aux[s['feed_id']] = s['response']
+                i += 1
+
+            response = dict()
+            for id in order:
+                if id in response_aux:
+                    response[id] = response_aux[id]
+
+            return HttpResponse(json.dumps(response), status=200, content_type="application/json")
+        else:
+            return HttpResponse('', status=405)
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
 
 
 def read_favorite(self):
@@ -210,27 +217,6 @@ def delete_favorite(self):
             pass
 
         return HttpResponse(json.dumps({}), status=200)
-    else:
-        return HttpResponse('', status=405)
-
-
-def read_favorite(self):
-    if self.method == 'GET':
-        try:
-            user = get_user_by_header_request(self)
-            user_id = user.id
-
-            if user_id is None:
-                return HttpResponse('', status=400)
-
-            article_ids = []
-            user_favorites = UserFavorite.objects.filter(user_id=user_id)
-            for user_favorite in user_favorites:
-                article_ids.append(user_favorite.article_id)
-
-            return HttpResponse(json.dumps(article_ids), status=200)
-        except:
-            print "Unexpected error:", sys.exc_info()[0]
     else:
         return HttpResponse('', status=405)
 
@@ -379,6 +365,14 @@ def list_feed_publications(self):
         try:
             response = dict()
 
+            order_en = list(Feed.objects.all().order_by('feed_name_en').values_list('feed_id', flat=True))
+            order_pt = list(Feed.objects.all().order_by('feed_name_pt').values_list('feed_id', flat=True))
+            order_es = list(Feed.objects.all().order_by('feed_name_es').values_list('feed_id', flat=True))
+
+            response['order_en'] = order_en
+            response['order_pt'] = order_pt
+            response['order_es'] = order_es
+
             response['solr_version'] = services.solr_repository_version()
 
             feeds = list(Feed.objects.all())
@@ -386,7 +380,7 @@ def list_feed_publications(self):
 
             for feed in feeds:
                 response['feeds'][feed.id] = feed.to_dict()
-                publications = list(Publication.objects.values_list('id', flat=True).filter(feeds=feed))
+                publications = list(Publication.objects.order_by('publication_name').values_list('id', flat=True).filter(feeds=feed))
                 response['feeds'][feed.id]['publications'] = publications
 
             publications = list(Publication.objects.all())
