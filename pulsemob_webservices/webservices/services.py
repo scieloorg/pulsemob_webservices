@@ -1,6 +1,5 @@
 __author__ = 'vitor'
 
-from pprint import pprint
 from models import User, UserFavorite,UserFeedExclusion, UserPublicationFeedExclusion, Publication, Feed
 import json
 import requests
