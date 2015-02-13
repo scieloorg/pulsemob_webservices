@@ -103,7 +103,6 @@ def login(self):
 
 def home(self):
     try:
-        print('Going in home...')
         if self.method == 'GET':
             user = get_user_by_header_request(self)
             user_id = user.id
@@ -136,8 +135,6 @@ def home(self):
                     t.start()
 
             response = dict()
-
-            print('Keep going in home...', count_calls)
 
             i = 0
             while i < count_calls:
@@ -270,26 +267,32 @@ def create_feed_publication_exclusion(self):
 
 
 def create_feed_publication_exclusion_all(self):
-    if self.method == 'POST':
-        user = get_user_by_header_request(self)
-        user_id = user.id
-        data = json.loads(self.body)
-        feed_id = data.get('feed_id', None)
+    try:
+        if self.method == 'POST':
+            user = get_user_by_header_request(self)
+            user_id = user.id
 
-        if feed_id is None:
-            return HttpResponse('You should provide feed_id parameter.', status=400)
+            data = json.loads(self.body)
 
-        user_publications_exclusion = list(UserPublicationFeedExclusion.objects.filter(user_id=user_id, feed_id=feed_id).values_list('publication_id', flat=True))
+            feed_id = data.get('feed_id', None)
 
-        publication_ids = list(Publication.objects.filter(feed_id=feed_id).values_list('publication_id', flat=True))
-        for publication_id in publication_ids:
-            if publication_id not in user_publications_exclusion:
-                user_feed__publication_exclusion = UserPublicationFeedExclusion(None, user_id, publication_id, feed_id)
-                user_feed__publication_exclusion.save()
+            if feed_id is None:
+                return HttpResponse('You should provide feed_id parameter.', status=400)
 
-        return HttpResponse(json.dumps({}), status=200)
-    else:
-        return HttpResponse('', status=405)
+            user_publications_exclusion = list(UserPublicationFeedExclusion.objects.filter(user_id=user_id, feed_id=feed_id).values_list('publication_id', flat=True))
+
+            publication_ids = list(Publication.objects.filter(feeds=feed_id).values_list('id', flat=True))
+
+            for publication_id in publication_ids:
+                if publication_id not in user_publications_exclusion:
+                    user_feed__publication_exclusion = UserPublicationFeedExclusion(None, user_id, publication_id, feed_id)
+                    user_feed__publication_exclusion.save()
+
+            return HttpResponse(json.dumps({}), status=200)
+        else:
+            return HttpResponse('', status=405)
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
 
 
 def delete_feed_publication_exclusion(self):

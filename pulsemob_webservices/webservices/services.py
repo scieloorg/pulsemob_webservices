@@ -83,7 +83,6 @@ def feed_find_by_id(self, id = 1000):
 
 
 def memcache_connection():
-    print(CACHES['default']['LOCATION'])
     return memcache.Client([CACHES['default']['LOCATION']], debug=0)
 
 
@@ -150,7 +149,6 @@ def publication_dictionary(self):
     dictionary = {}
     for publication in publications:
         feeds = publication.feeds.all()
-        print(feeds.filter(id=1).count())
         dictionary[publication.publication_name] = {'id': publication.id, 'publication_name': publication.publication_name, 'feeds': list(publication.feeds.all().values('id'))}
     return HttpResponse(json.dumps(dictionary), content_type="application/json")
 

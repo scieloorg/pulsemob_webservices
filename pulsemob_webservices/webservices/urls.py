@@ -20,8 +20,8 @@ urlpatterns = [
 
     url(r'^preferences/feed/publication/exclusion/create', create_feed_publication_exclusion),
     url(r'^preferences/feed/publication/exclusion/delete', delete_feed_publication_exclusion),
-    url(r'^preferences/feed/publication/exclusion/create/all', create_feed_publication_exclusion_all),
-    url(r'^preferences/feed/publication/exclusion/delete/all', delete_feed_publication_exclusion_all),
+    url(r'^preferences/feed/publication/exclusion/all/create', create_feed_publication_exclusion_all),
+    url(r'^preferences/feed/publication/exclusion/all/delete', delete_feed_publication_exclusion_all),
 
     url(r'^user/language', user_change_language),
     url(r'^user/font', user_change_font_size),

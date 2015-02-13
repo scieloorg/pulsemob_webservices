@@ -4,7 +4,7 @@ __author__ = 'jociel'
 
 from xylose.scielodocument import Article
 from datetime import datetime
-from webservices.webservices.models import Feed, Publication
+from pulsemob_webservices.webservices.models import Feed, Publication
 import re
 import django
 
