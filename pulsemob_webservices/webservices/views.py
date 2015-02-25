@@ -7,6 +7,8 @@ import Queue
 import threading
 import sys
 import services
+import traceback
+import logging
 
 
 def get_user_by_header_request(request):
@@ -29,7 +31,7 @@ def get_user_by_header_request(request):
         except User.DoesNotExist:
             pass
         except:
-            print "Unexpected error:", sys.exc_info()[0]
+            traceback.print_exc(file=sys.stdout)
             raise
 
 
@@ -98,7 +100,7 @@ def login(self):
         else:
             return HttpResponse('', status=405)
     except:
-        print "Unexpected error:", sys.exc_info()[0]
+        traceback.print_exc(file=sys.stdout)
 
 
 def home(self):
