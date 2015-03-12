@@ -78,7 +78,6 @@ class RequestMiddleware(object):
 
                 response = requests.get('https://www.googleapis.com/oauth2/v1/tokeninfo', params={token_type: token})
 
-                pprint(vars(response))
                 if not response.status_code == 200:
                     mc.delete(token_hash)
                     logger.info('AUTHENTICATION - Authentication not ok.')

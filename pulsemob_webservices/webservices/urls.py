@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^preferences/feed/publication/exclusion/delete', delete_feed_publication_exclusion),
     url(r'^preferences/feed/publication/exclusion/all/create', create_feed_publication_exclusion_all),
     url(r'^preferences/feed/publication/exclusion/all/delete', delete_feed_publication_exclusion_all),
+    url(r'^preferences/feed/publication/save/status', update_feed_publication_status),
 
     url(r'^user/language', user_change_language),
     url(r'^user/font', user_change_font_size),

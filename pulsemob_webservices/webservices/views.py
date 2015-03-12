@@ -436,3 +436,35 @@ def solr_version(self):
             raise
     else:
         return HttpResponse('', status=405)
+
+
+def update_feed_publication_status(self):
+    if self.method == 'POST':
+        user = get_user_by_header_request(self)
+        user_id = user.id
+        data = json.loads(self.body)
+        feed_id = data.get('feed_id', None)
+        publications = data.get('publications', None)
+        add_publication_ids = publications.get('add', None)
+        remove_publication_ids = publications.get('remove', None)
+
+        if feed_id is None:
+            return HttpResponse('You should provide feed_id parameter.', status=400)
+
+        for id in add_publication_ids:
+            try:
+                user_feed__publication_exclusion = UserPublicationFeedExclusion.objects.get(user_id=user_id, feed_id=feed_id, publication_id=id)
+                user_feed__publication_exclusion.delete()
+            except UserPublicationFeedExclusion.DoesNotExist:
+                pass
+
+        for id in remove_publication_ids:
+            try:
+                UserPublicationFeedExclusion.objects.get(user_id=user_id, feed_id=feed_id, publication_id=id)
+            except UserPublicationFeedExclusion.DoesNotExist:
+                user_feed__publication_exclusion = UserPublicationFeedExclusion(None, user_id, id, feed_id)
+                user_feed__publication_exclusion.save()
+
+        return HttpResponse(json.dumps({}), status=200)
+    else:
+        return HttpResponse('', status=405)
