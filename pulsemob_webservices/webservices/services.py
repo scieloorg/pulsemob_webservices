@@ -99,21 +99,19 @@ def solr_repository_version():
 
 def article_find_by_feed_id_and_not_publication_id(feed_id, exclusions_publication_id, q, start=0, rows=50):
     fq_feed_filter = 'subject_areas_ids: ' + str(feed_id)
-
     fq_publication_filter = ''
 
     if len(exclusions_publication_id) > 0:
-        fq_publication_filter = ' -journal_title_id: ' + str(exclusions_publication_id[0])
+        fq_publication_filter = ' -journal_title_id: (' + str(exclusions_publication_id[0])
 
     i = 1
     while i < len(exclusions_publication_id):
-        fq_publication_filter = fq_publication_filter + ' AND -journal_title_id: ' + str(exclusions_publication_id[i])
+        fq_publication_filter = fq_publication_filter + ' OR ' + str(exclusions_publication_id[i])
         i += 1
 
-    fq_parameter = fq_feed_filter + ' AND ' + fq_publication_filter
+    fq_parameter = fq_feed_filter + ' AND ' + fq_publication_filter + ')'
 
     response = requests.get(SOLR_URL + 'feed', params={'q': fq_parameter})
-
     q.put({'feed_id': feed_id, 'response': response.json()['response']})
 
 
