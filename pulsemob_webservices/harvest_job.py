@@ -11,6 +11,7 @@ import time
 
 
 def delete_article_entry(code):
+    print(code)
     solr_conn.delete(code=code)
 
 

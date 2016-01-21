@@ -1,29 +1,49 @@
 from django.conf.urls import url
-from views import *
+import views
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    url(r'^login', login),
-    url(r'^home', home),
+    # region Mobile webservices.
+    url(r'^mobile/login', views.login_mobile),
+    url(r'^mobile/home', views.home),
 
-    url(r'^solr/version', solr_version),
+    url(r'^mobile/solr/version', views.solr_version),
 
-    url(r'^favorite/create', create_favorite),
-    url(r'^favorite/read', read_favorite),
-    url(r'^favorite/delete', delete_favorite),
+    url(r'^mobile/magazine/search', views.search),
 
-    url(r'^feed/publications/list', list_feed_publications),
+    url(r'^mobile/favorite/create', views.create_favorite),
+    url(r'^mobile/favorite/read', views.read_favorite),
+    url(r'^mobile/favorite/delete', views.delete_favorite),
 
-    url(r'^preferences/feed/exclusion/create', create_feed_exclusion),
-    url(r'^preferences/feed/exclusion/delete', delete_feed_exclusion),
+    url(r'^mobile/category/magazines/list', views.list_category_magazines),
 
-    url(r'^preferences/feed/publication/exclusion/create', create_feed_publication_exclusion),
-    url(r'^preferences/feed/publication/exclusion/delete', delete_feed_publication_exclusion),
-    url(r'^preferences/feed/publication/exclusion/all/create', create_feed_publication_exclusion_all),
-    url(r'^preferences/feed/publication/exclusion/all/delete', delete_feed_publication_exclusion_all),
-    url(r'^preferences/feed/publication/save/status', update_feed_publication_status),
+    url(r'^mobile/feed/create', views.create_feed),
+    url(r'^mobile/feed/update', views.update_feed),
+    url(r'^mobile/feed/delete', views.delete_feed),
 
-    url(r'^user/language', user_change_language),
-    url(r'^user/font', user_change_font_size),
+    url(r'^mobile/user/language', views.user_change_language),
+    url(r'^mobile/user/font', views.user_change_font_size),
+    # endregion
+
+    # region Backoffice webservices.
+    url(r'^backoffice/users/login', views.bo_administrator_login),
+    url(r'^backoffice/users/me', views.bo_administrator_me),
+    url(r'^backoffice/users/change-password', views.bo_administrator_change_password),
+    url(r'^backoffice/users/set-password', views.bo_administrator_set_password),
+    url(r'^backoffice/users/recover-password', views.bo_administrator_recover_password),
+    url(r'^backoffice/users/validate-recovery-token', views.bo_administrator_validate_recovery_token),
+
+    url(r'^backoffice/users/save', views.bo_administrator_save),
+    url(r'^backoffice/users/list', views.bo_administrator_list),
+    url(r'^backoffice/users/delete/(?P<pk>[0-9]+)', views.bo_administrator_delete),
+
+    url(r'^backoffice/magazines/list', views.bo_magazine_list),
+    url(r'^backoffice/categories/list', views.bo_category_list),
+
+    url(r'^backoffice/articles/upload-cover', views.bo_cover_save),
+    url(r'^backoffice/articles/delete-cover/(?P<article_id>[0-9a-zA-Z-]+)', views.bo_cover_delete),
+
+    url(r'^backoffice/articles/get-cover/(?P<article_id>[0-9a-zA-Z-]+)', views.bo_cover_get),
+    # endregion
 ]

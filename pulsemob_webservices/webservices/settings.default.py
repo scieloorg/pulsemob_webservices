@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ni-^vkuo*4^fn5rj9*dvv0v+iyxl$8dszj852#=+evp(3hjf1$'
+SECRET_KEY = # Update
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -47,13 +47,7 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
-    ],
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-    )
+    ]
 }
 
 MIDDLEWARE_CLASSES = (
@@ -63,8 +57,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'webservices.middleware.RequestMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 )
 
 ROOT_URLCONF = 'webservices.urls'
@@ -73,16 +66,14 @@ WSGI_APPLICATION = 'webservices.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-#dbname='postgres' user='pulsemob' host='192.168.0.2' password=''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '', # update
-        'USER': '', # update
-        'PASSWORD': '', # update
-        'HOST': '', # update
-        'PORT': '', # update
+        'NAME': # Update,
+        'USER': # Update,
+        'PASSWORD': # Update,
+        'HOST': # Update,
+        'PORT': # Update,
     }
 }
 
@@ -94,19 +85,20 @@ CORS_ALLOW_HEADERS = (
         'accept',
         'token',
         'facebookid',
-        'googleid'
+        'googleid',
+        'Authorization'
     )
 
 # Memcached configurations
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '0.0.0.0:port', # update
+        'LOCATION': # Update
     }
 }
 
 #Solr
-SOLR_URL = 'http://192.168.0.2:8983/solr/pulsemob/'
+SOLR_URL = # Update
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -122,5 +114,43 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-
 STATIC_URL = '/static/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s] %(levelname)s (%(module)s): %(message)s',
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': # Update
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'webservices': {
+            'handlers': ['file'],
+            'level': 'DEBUG'
+        }
+    }
+}
+
+BACKOFFICE_URL = # Update
+
+# region SMTP Setting
+SMTP_SERVER = # Update
+SMTP_LOGIN = # Update
+SMTP_PASSWORD = # Update
+SMTP_FROM = # Update
+#endregion
+
+# ADMINS = # Update

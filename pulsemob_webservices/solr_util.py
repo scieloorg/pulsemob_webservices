@@ -4,7 +4,7 @@ __author__ = 'jociel'
 
 from xylose.scielodocument import Article
 from datetime import datetime
-from pulsemob_webservices.webservices.models import Feed, Publication
+from webservices.models import Magazine, Category
 import re
 import django
 
@@ -54,74 +54,68 @@ def get_solr_args_from_article(document):
     else:
         first_author = ""
 
-    #Start - Insert feed and publication
-    print ('Start - Insert feed and publication')
+    #Start - Insert categories and magazines
+    # print ('Start - Insert categories and magazines')
 
-    feeds = list(Feed.objects.all())
-    publications = list(Publication.objects.all().prefetch_related('feeds'))
-    feed_ids = []
-    publication_ids = []
-    publication_name = remove_control_chars(u"{0}".format(article.journal.title)).title()
+    magazine_name = remove_control_chars(u"{0}".format(article.journal.title))
+    magazine_issn = article.journal.scielo_issn
+    magazine_abbreviated_title = remove_control_chars(article.journal.abbreviated_title)
+    magazine_domain = article.scielo_domain
+    magazine_acronym = article.journal.acronym
 
-    publication_exists = False
-    publication = None
-    for publication_loop in publications:
-        if publication_loop.publication_name == publication_name:
-            publication_exists = True
-            publication = publication_loop
-            break
 
-    if not publication_exists:
-        publication = Publication(None, publication_name)
-        publication.save()
-        publications.append(publication)
+    try:
+        magazine = Magazine.objects.get(magazine_name=magazine_name)
+    except Magazine.DoesNotExist:
+        magazine = Magazine.objects.create(magazine_name=magazine_name,
+                                           magazine_abbreviated_title=magazine_abbreviated_title,
+                                           magazine_issn=magazine_issn,
+                                           magazine_domain=magazine_domain,
+                                           magazine_acronym=magazine_acronym)
+        magazine.save()
 
-    publication_ids.append(publication.id)
+    category_ids = []
+    for item_category in article.journal.subject_areas:
+        category_name = remove_control_chars(u"{0}".format(item_category)).title()
 
-    for item_feed in article.journal.subject_areas:
-        feed_name = remove_control_chars(u"{0}".format(item_feed)).title()
+        try:
+            category = Category.objects.get(category_name_en=category_name)
+        except Category.DoesNotExist:
+            category = Category.objects.create(category_name_en=category_name)
+            category.save()
 
-        feed_exists = False
-        feed = None
-        for feed_loop in feeds:
-            if feed_loop.feed_name_en == feed_name:
-                feed_exists = True
-                feed = feed_loop
+        category_ids.append(category.id)
+
+        category_publication_relationship = False
+        for category_loop in magazine.categories.all():
+            if category_loop.category_name_en == category_name:
+                category_publication_relationship = True
                 break
 
-        if not feed_exists:
-            feed = Feed(None, feed_name)
-            feed.save()
-            feeds.append(feed)
+        if not category_publication_relationship:
+            magazine.categories.add(category)
+            magazine.save()
 
-        feed_ids.append(feed.id)
-
-        feed_publication_relationship = False
-        for feed_loop in publication.feeds.all():
-            if feed_loop.feed_name_en == feed_name:
-                feed_publication_relationship = True
-                break
-
-        if not feed_publication_relationship:
-            publication.feeds.add(feed)
-
-    print ('End - Insert feed and publication')
-    # End - Insert feed and publication
+    # print ('End - Insert categories and magazines')
+    # End - Insert categories and magazines
 
     args = {
         "id": u"{0}{1}".format(article.publisher_id, article.collection_acronym),
-        "scielo_issn": article.journal.scielo_issn,
+        # "scielo_issn": article.journal.scielo_issn,
         "any_issn": article.journal.any_issn(),
-        "journal_title": remove_control_chars(article.journal.title),  # publication
-        "journal_title_id": publication_ids,
+        "journal_title": remove_control_chars(article.journal.title),  # Magazine
+        "journal_id": magazine.id,
 
-        "journal_abbreviated_title": remove_control_chars(article.journal.abbreviated_title),
+        "journal_volume": article.volume,
+        "journal_number": article.issue,
+
+        # "journal_abbreviated_title": remove_control_chars(article.journal.abbreviated_title),
         "original_title": remove_control_chars(original_title),
         "original_abstract": remove_control_chars(article.original_abstract()),
         "publication_date": "{0}Z".format(publication_date),
-        "journal_acronym": article.journal.acronym,
-        "subject_areas": article.journal.subject_areas,  # feed
-        "subject_areas_ids": feed_ids,  # feed ids
+        # "journal_acronym": article.journal.acronym,
+        "subject_areas": article.journal.subject_areas,  # Categories
+        "subject_areas_ids": category_ids,  # Category ids
 
         "wos_subject_areas": article.journal.wos_subject_areas,
 
@@ -131,7 +125,7 @@ def get_solr_args_from_article(document):
         "authors": authors,
         "first_author": first_author,
         "corporative_authors": article.corporative_authors,
-        "scielo_domain": article.scielo_domain,
+        # "scielo_domain": article.scielo_domain,
         "publisher_id": article.publisher_id,
         "collection_acronym": article.collection_acronym
     }
