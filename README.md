@@ -10,13 +10,13 @@ Before installing the SciELO Webservices, install the software listed below.
 Server software
 
  
- |**software**    |**product URL / installation instructions (for CentOS)**                                      |
- |----------------|----------------------------------------------------------------------------------------------|
- | Python 2.7     | http://www.python.org/                                                                       |
- | PostgreSQL     | http://www.postgresql.org/ -Installation: yum install postgresql                             |
- | PostgreSQL Dev | http://www.postgresql.org/ - Installation: yum install postgresql-devel                      |
- | GIT            | http://git-scm.com/ - Installation: yum install git-core                                     |
- | Solr           | https://lucene.apache.org/solr/ Installation: See https://github.com/Infobase/pulsemob_solr  | 
+ **software**    | **product URL** | **installation instructions (for CentOS)**
+ --- | --- | ---
+  Python 2.7 | http://www.python.org/  |
+  PostgreSQL | http://www.postgresql.org/ | Installation: yum install postgresql
+  PostgreSQL Dev | http://www.postgresql.org/ | Installation: yum install postgresql-devel
+  GIT | http://git-scm.com/ | Installation: yum install git-core
+  Solr | https://lucene.apache.org/solr/ | Installation: See https://github.com/Infobase/pulsemob_solr
  
 1. Install each package below using the recommended installation method.
 
@@ -24,13 +24,12 @@ Note: Python comes pre-installed in most Linux distributions. If Python 2.7 is a
 
 System-wide Python libraries
 
- +---------------+-------------------------------------------+-----------------------------+
- |**software**   |**product URL**                            |**installation method**      |
- +===============+===========================================+=============================+
- | pip           | http://pypi.python.org/pypi/pip           | sudo easy_install pip       | 
- +---------------+-------------------------------------------+-----------------------------+
- | virtualenv    | http://pypi.python.org/pypi/virtualenv    | sudo pip install virtualenv |
- +---------------+-------------------------------------------+-----------------------------+
+ 
+ **software**   |**product URL** |**installation method**
+ --- | --- | ---
+  pip           | http://pypi.python.org/pypi/pip           | sudo easy_install pip
+  virtualenv    | http://pypi.python.org/pypi/virtualenv    | sudo pip install virtualenv
+ 
 
  
 Install the application environment
@@ -88,7 +87,7 @@ Test and run the harvest script
 9. Run automated tests:
 
 	(scielopulsemob-env)$ cd pulsemob_webservices/pulsemob_webservices
-    (scielopulsemob-env)$ python -u run_tests.py
+        (scielopulsemob-env)$ python -u run_tests.py
 
 	
 10. Run the harvest script to collect article data:
