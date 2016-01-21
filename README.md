@@ -10,23 +10,13 @@ Before installing the SciELO Webservices, install the software listed below.
 
 Server software
 
- +----------------+--------------------------------------------------------------+
- |**software**    |**product URL / installation instructions (for CentOS)**      |
- +================+==============================================================+
- | Python 2.7     | http://www.python.org/                                       |
- +----------------+--------------------------------------------------------------+
- | PostgreSQL     | http://www.postgresql.org/                                   |
- |                | Installation: yum install postgresql                         |
- +----------------|--------------------------------------------------------------+
- | PostgreSQL Dev | http://www.postgresql.org/                                   |
- |                | Installation: yum install postgresql-devel                   |
- +----------------+--------------------------------------------------------------+
- | GIT            | http://git-scm.com/                                          |
- |                | Installation: yum install git-core                           |
- +----------------+--------------------------------------------------------------+
- | Solr           | https://lucene.apache.org/solr/                              |
- |                | Installation: See https://github.com/Infobase/pulsemob_solr  | 
- +----------------+--------------------------------------------------------------+
+ 
+ |**software**    |**product URL / installation instructions (for CentOS)**                 |
+ | Python 2.7     | http://www.python.org/                                                  |
+ | PostgreSQL     | http://www.postgresql.org/ -Installation: yum install postgresql        |
+ | PostgreSQL Dev | http://www.postgresql.org/ - Installation: yum install postgresql-devel |
+ | GIT            | http://git-scm.com/ - Installation: yum install git-core                |
+ | Solr           | https://lucene.apache.org/solr/ Installation: See https://github.com/Infobase/pulsemob_solr  | 
  
 1. Install each package below using the recommended installation method.
 
