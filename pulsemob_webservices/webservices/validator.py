@@ -18,10 +18,9 @@ def user_can_perform_cover_management(user_id, article):
     magazine_id = article.get('journal_id', None)
 
     if Administrator.objects.filter(magazines=magazine_id, id=user_id).exists():
-        logger.warning('Error validating cover management operation. Administrator ({id}) is not related to magazine ({magazine_id})'.format(id=user_id, magazine_id=magazine_id))
         return True
 
-    logger.info('user_can_perform_cover_management: False')
+    logger.warning('Error validating cover management operation. Administrator ({id}) is not related to magazine ({magazine_id})'.format(id=user_id, magazine_id=magazine_id))
     return False
 
 
