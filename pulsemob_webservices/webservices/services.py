@@ -102,6 +102,6 @@ def article_find_favorite_by_user_id(user_id, start=0, rows=50):
 
 
 if __name__ == "__main__":
-    journal_title_id = 1;
-    response = requests.get('http://192.168.0.2:8983/solr/pulsemob/' + 'feed', params={'q': 'journal_title_id:' + journal_title_id, 'fl': 'scielo_domain, scielo_issn, journal_acronym, journal_abbreviated_title', 'start': 0, 'rows': 1})
+    journal_id = 1;
+    response = requests.get('http://192.168.0.2:8983/solr/pulsemob/' + 'feed', params={'q': 'journal_id:' + journal_id, 'fl': 'scielo_domain, scielo_issn, journal_acronym, journal_abbreviated_title', 'start': 0, 'rows': 1})
     print response;

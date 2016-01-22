@@ -9,19 +9,16 @@ def user_can_perform_cover_management(user_id, article):
     try:
         user = Administrator.objects.get(id=user_id)
     except Administrator.DoesNotExist:
-        logger.warning('Error validating ({email}) cover management operation. Administrator not found.'.format(id=user_id))
+        logger.warning('Error validating cover management operation. Administrator ({id}) not found.'.format(id=user_id))
         raise CustomException(CustomErrorMessages.USER_NOT_FOUND)
 
     if user.profile == 0:
         return True
 
-    magazine_id = article.get('journal_title_id', None)
-
-    logger.info('journal_title_id: ' + str(magazine_id))
-    logger.info('user_id: ' + str(user_id))
+    magazine_id = article.get('journal_id', None)
 
     if Administrator.objects.filter(magazines=magazine_id, id=user_id).exists():
-        logger.info('user_can_perform_cover_management: True')
+        logger.warning('Error validating cover management operation. Administrator ({id}) is not related to magazine ({magazine_id})'.format(id=user_id, magazine_id=magazine_id))
         return True
 
     logger.info('user_can_perform_cover_management: False')
