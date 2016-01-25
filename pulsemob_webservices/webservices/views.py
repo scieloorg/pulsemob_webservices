@@ -709,16 +709,11 @@ def bo_administrator_save(self):
             if not serializer.is_valid():
                 return HttpResponse(status=401)
 
-            if serializer.validated_data.get('id', None) is None and not admin is None:
+            if serializer.validated_data.get('id', None) is None and admin is not None:
                 raise CustomException(CustomErrorMessages.USER_ALREADY_EXISTS)
 
             magazines = serializer.validated_data.get('magazines', [])
             magazines = [val['id'] for val in magazines]
-
-            logger.info(user.profile == 0)
-            logger.info(set(magazines).issubset(set(removed_magazines)))
-            logger.info(serializer.validated_data.get('profile', admin.profile) == 2)
-            logger.info(serializer.validated_data.get('profile', None))
 
             if not (user.profile == 0 or (set(magazines).issubset(set(removed_magazines)) and serializer.validated_data.get('profile', admin.profile) == 2)):
                 raise CustomException(CustomErrorMessages.NOT_ALLOWED_FOR_PROFILE)
