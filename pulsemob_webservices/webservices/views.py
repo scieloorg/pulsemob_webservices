@@ -715,7 +715,12 @@ def bo_administrator_save(self):
             magazines = serializer.validated_data.get('magazines', [])
             magazines = [val['id'] for val in magazines]
 
-            if not user.profile == 0 and not set(magazines).issubset(set(removed_magazines)):
+            logger.info(user.profile == 0)
+            logger.info(set(magazines).issubset(set(removed_magazines)))
+            logger.info(serializer.validated_data.get('profile', admin.profile) == 2)
+            logger.info(serializer.validated_data.get('profile', None))
+
+            if not (user.profile == 0 or (set(magazines).issubset(set(removed_magazines)) and serializer.validated_data.get('profile', admin.profile) == 2)):
                 raise CustomException(CustomErrorMessages.NOT_ALLOWED_FOR_PROFILE)
 
             admin = serializer.save()
@@ -859,43 +864,45 @@ def bo_magazine_list(self):
 
 
 @decorator_from_middleware(BackofficeAuthMiddleware)
+@transaction.atomic
 def bo_cover_save(self):
     try:
-        logger.info('Handling /backoffice/articles/upload-cover.')
-        if self.method == 'POST':
-            token = self.META.get('HTTP_AUTHORIZATION', None)
-            article_id = self.POST.get('article_id', None)
-            image = self.FILES['file']
+        with transaction.atomic():
+            logger.info('Handling /backoffice/articles/upload-cover.')
+            if self.method == 'POST':
+                token = self.META.get('HTTP_AUTHORIZATION', None)
+                article_id = self.POST.get('article_id', None)
+                image = self.FILES['file']
 
-            article = solr_service.get_article(article_id)
-            user = jwt_util.jwt_auth_get_user(token)
+                article = solr_service.get_article(article_id)
+                user = jwt_util.jwt_auth_get_user(token)
 
-            if not validator.user_can_perform_cover_management(user.id, article):
-                raise CustomException(CustomErrorMessages.NOT_ALLOWED_FOR_PROFILE)
+                if not validator.user_can_perform_cover_management(user.id, article):
+                    raise CustomException(CustomErrorMessages.NOT_ALLOWED_FOR_PROFILE)
 
-            try:
-                cover_article = CoverArticle.objects.get(article_id=article_id)
-                cover_article.image.delete()
-            except CoverArticle.DoesNotExist:
-                cover_article = CoverArticle(article_id=article_id)
-                cover_article.magazine = Magazine.objects.get(id=article['journal_id'])
+                try:
+                    cover_article = CoverArticle.objects.get(article_id=article_id)
+                    cover_article.image.delete()
+                except CoverArticle.DoesNotExist:
+                    cover_article = CoverArticle(article_id=article_id)
+                    cover_article.magazine = Magazine.objects.get(id=article['journal_id'])
 
-            cover_article.administrator = user
-            cover_article.save()
+                cover_article.administrator = user
+                cover_article.save()
 
-            cover_article.image.save(str(uuid.uuid4()) + '.png', image)
+                cover_article.image.save(str(uuid.uuid4()) + '.png', image)
 
-            cover_article.save()
+                cover_article.save()
 
-            article['image_upload_date'] = cover_article.upload_time
-            article['image_upload_path'] = cover_article.image
-            article['image_uploader'] = user.name
+                article['image_upload_date'] = cover_article.upload_time
+                article['image_upload_path'] = cover_article.image
+                article['image_uploader'] = user.name
 
-            solr_service.add_article(article)
+                solr_service.add_article(article)
 
-            return HttpResponse(json.dumps(CoverArticleSerializer(cover_article).data), status=200)
-        else:
-            return HttpResponse(status=405)
+                return HttpResponse(json.dumps(CoverArticleSerializer(cover_article).data), status=200)
+            else:
+                return HttpResponse(status=405)
     except CustomException as ce:
         return HttpResponse(ce.message, status=450)
     except:

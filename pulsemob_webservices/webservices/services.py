@@ -58,7 +58,7 @@ def article_find_by_feed_id(feed_id, q, start=0, rows=50):
     fq_magazine_filter = ''
 
     if len(magazine_ids) > 0:
-        fq_magazine_filter = ' journal_title_id: (' + str(magazine_ids[0])
+        fq_magazine_filter = ' journal_id: (' + str(magazine_ids[0])
 
     i = 1
     while i < len(magazine_ids):
@@ -75,7 +75,7 @@ def article_find_by_feed_id(feed_id, q, start=0, rows=50):
 
 
 def article_find_by_magazine_id(magazine_id, q, start=0, rows=50):
-    fq_magazine_filter = 'journal_title_id: ' + str(magazine_id)
+    fq_magazine_filter = 'journal_id: ' + str(magazine_id)
 
     response = requests.get(SOLR_URL + '/magazine', params={'q': fq_magazine_filter})
 
