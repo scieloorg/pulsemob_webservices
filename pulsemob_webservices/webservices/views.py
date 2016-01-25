@@ -715,7 +715,7 @@ def bo_administrator_save(self):
             magazines = serializer.validated_data.get('magazines', [])
             magazines = [val['id'] for val in magazines]
 
-            if not (user.profile == 0 or (set(magazines).issubset(set(removed_magazines)) and serializer.validated_data.get('profile', admin.profile) == 2)):
+            if not (user.profile == 0 or (set(magazines).issubset(set(removed_magazines)) and serializer.validated_data.get('profile', None) == 2)):
                 raise CustomException(CustomErrorMessages.NOT_ALLOWED_FOR_PROFILE)
 
             admin = serializer.save()
