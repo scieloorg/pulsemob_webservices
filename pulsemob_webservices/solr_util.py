@@ -4,7 +4,7 @@ __author__ = 'jociel'
 
 from xylose.scielodocument import Article
 from datetime import datetime
-from webservices.models import Magazine, Category
+from webservices.models import Magazine, Category, CoverArticle
 import re
 import django
 
@@ -21,7 +21,7 @@ def remove_control_chars(s):
         return control_char_re.sub('', s)
 
 
-def get_solr_args_from_article(document):
+def get_solr_args_from_article(document, indexed_date):
     article = Article(document)
 
     original_title = article.original_title()
@@ -127,8 +127,20 @@ def get_solr_args_from_article(document):
         "corporative_authors": article.corporative_authors,
         # "scielo_domain": article.scielo_domain,
         "publisher_id": article.publisher_id,
-        "collection_acronym": article.collection_acronym
+        "collection_acronym": article.collection_acronym,
+
+        "indexed_date": indexed_date
     }
+
+    # Adding cover if reindexing or updating.
+    try:
+        cover_article = CoverArticle.objects.get(article_id=args[u"id"])
+
+        args[u"image_upload_path"] = cover_article.image
+        args[u"image_upload_date"] = cover_article.upload_time
+        args[u"image_uploader"] = cover_article.administrator.name
+    except CoverArticle.DoesNotExist:
+        pass
 
     article_translated_abstracts = article.translated_abstracts()
     if article_translated_abstracts is not None:

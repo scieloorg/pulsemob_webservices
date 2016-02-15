@@ -15,8 +15,8 @@ def delete_article_entry(code):
     solr_conn.delete(code=code)
 
 
-def add_update_article_entry(code, document, action):
-    args = solr_util.get_solr_args_from_article(document)
+def add_update_article_entry(code, document, action, indexed_date):
+    args = solr_util.get_solr_args_from_article(document, indexed_date)
     while True:
         try:
             solr_conn.add(**args)

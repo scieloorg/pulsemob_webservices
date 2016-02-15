@@ -10,7 +10,7 @@ welcome_subject = 'Bem-vindo ao Backoffice SciELO'
 welcome_message = 'Olá,\n\nSeja bem-vindo ao Backoffice SciELO. Para cadastrar sua senha clique em: {0}/#/set-password?token={1}\n\nAtenciosamente,\nEquipe SciELO.'
 
 password_recovery_subject = 'Recuperação de Senha'
-password_recovery_message = 'Olá,\n\nConforme solicitado, segue o link para recuperação de senha de acesso ao Backoffice SciELO: {0}/#/set-password?token={1}.\nCaso você não tenha solicitado a recuperação de senha, ignore esse email.\n\nAtenciosamente,\nEquipe SciELO.'
+password_recovery_message = 'Olá,\n\nConforme solicitado, segue o link para recuperação de senha de acesso ao Backoffice SciELO: {0}/#/set-password?token={1}&recovery=true.\nCaso você não tenha solicitado a recuperação de senha, ignore esse email.\n\nAtenciosamente,\nEquipe SciELO.'
 
 
 def sendemail(from_addr, to_addr_list, cc_addr_list,

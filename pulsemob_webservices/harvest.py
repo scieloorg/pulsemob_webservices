@@ -7,6 +7,7 @@ import time
 import requests
 import psycopg2
 from xylose.scielodocument import Journal
+from django.utils import timezone
 
 
 def do_request(url, params):
@@ -86,7 +87,7 @@ def delete_entries(curs, table_name, delete_entry_method):
     logging.info("{0} entries deleted.".format(len(rows)))
 
 
-def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_entry_method, action):
+def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_entry_method, action, indexed_date):
     if action == "I":
         logging.info("Adding entries...")
     elif action == "U":
@@ -122,7 +123,7 @@ def add_update_entries(curs, table_name, article_meta_uri, endpoint, add_update_
                 doc_ret = None
 
         if doc_ret is not None:
-            add_update_entry_method(identifier, doc_ret, action)
+            add_update_entry_method(identifier, doc_ret, action, indexed_date)
         else:
             logging.info("{0} '{1}' not found.".format(endpoint, code))
 
@@ -167,8 +168,11 @@ def harvest(article_meta_uri,
             temp_table = "{0}_temp".format(data_table_name)
             store_and_process_data_from_file(curs, input_file, data_table_name, temp_table)
             delete_entries(curs, data_table_name, delete_entry)
-            add_update_entries(curs, temp_table, article_meta_uri, endpoint, add_update_entry, "I")
-            add_update_entries(curs, temp_table, article_meta_uri, endpoint, add_update_entry, "U")
+
+            indexed_date = timezone.now()
+
+            add_update_entries(curs, temp_table, article_meta_uri, endpoint, add_update_entry, "I", indexed_date)
+            add_update_entries(curs, temp_table, article_meta_uri, endpoint, add_update_entry, "U", indexed_date)
             switch_and_clean_tables(curs, data_table_name, temp_table)
         conn.commit()
     logging.info("{0} - Process finished.".format(time.ctime()))
