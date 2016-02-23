@@ -27,7 +27,7 @@ def do_request(url, params):
     return response
 
 
-def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepath, page_limit=10):
+def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepath, page_limit=None):
     with open(output_filepath, "w") as text_file:
         page = 0
         while True:
@@ -67,6 +67,7 @@ def extract_data_from_journal_webservice_to_file(article_meta_uri, output_filepa
 def store_and_process_data_from_file(curs, input_filepath, data_table, temp_table):
     logging.info("Processing data...")
     curs.execute("TRUNCATE {0}".format(temp_table))
+    curs.copy_from(open(r'{0}'.format(input_filepath), 'r'), temp_table, sep=',')
     curs.execute("COPY {0} FROM '{1}' USING DELIMITERS ',' CSV".format(temp_table, input_filepath))
     curs.execute("UPDATE {0} a SET action='D' WHERE NOT EXISTS (SELECT 1 FROM {1} WHERE id = a.id)".format(data_table,
                                                                                                            temp_table))
