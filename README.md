@@ -56,38 +56,38 @@ $ git clone git://github.com/Infobase/pulsemob_webservices.git
 $ pip install -r pulsemob_webservices/requirements.txt
 ```
 ### 3. Running the Harvest
-1. Open pulsemob_webservices root folder;
-2. Change configuration file name;
+#### Open pulsemob_webservices root folder;
+#### Change configuration file name;
  ```sh
 $ mv pulsemob_webservices/harvest.cfg.default pulsemob_webservices/harvest.cfg
 ```
-3. Adjust configuration parameters in *harvest.cfg*;
-4. Create tables;
+#### Adjust configuration parameters in *harvest.cfg*;
+#### Create tables;
 ```sh
 $ python pulsemob_webservices/create_database_tables.py
 ```
-5. Run.
+#### Run.
 ```sh
 $ python pulsemob_webservices/harvest_job.py
 ```
 It takes a lot of time for indexing articles for the first time.
 
 ### 4. Running server
-1. Activate virtualenv;
+#### Activate virtualenv;
 ```sh
 $ source scielopulsemob-env/bin/activate
 ```
-2. Open pulsemob_webservices root folder;
-3. Change webservice configuration file name;
+#### Open pulsemob_webservices root folder;
+#### Change webservice configuration file name;
 ```sh
 $ mv pulsemob_webservices/webservices/settings.default.py pulsemob_webservices/webservices/settings.py
 ```
-4. Adjust configuration parameters in settings.py;
-5. Create tables;
+#### Adjust configuration parameters in settings.py;
+#### Create tables;
 ```sh
 $ python pulsemob_webservices/manage.py syncdb
 ```
-6. Run.
+#### Run.
 ```sh
 $ cd pulsemob_webservices/
 $ nohup gunicorn -b 0.0.0.0:8006 webservices.wsgi:application &
