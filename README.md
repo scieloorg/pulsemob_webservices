@@ -2,7 +2,7 @@
 
 This application implements webservices to acquire and make available Article data from SciELO database.
 
-## Envinronment installation for CentOS 7
+## Environment installation for CentOS 7
 
 ### 1. Install pre-requisites:
 
