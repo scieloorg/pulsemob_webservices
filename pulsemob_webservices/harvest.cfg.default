@@ -1,0 +1,6 @@
+[harvest]
+data_source_name=dbname='' user='' host='' password=''
+pg_shared_folder_output=Z:/scielo
+pg_shared_folder_input=/public/scielo
+solr_uri=http://0.0.0.0:port/solr/pulsemob
+article_meta_uri=http://articlemeta.scielo.org/api/v1

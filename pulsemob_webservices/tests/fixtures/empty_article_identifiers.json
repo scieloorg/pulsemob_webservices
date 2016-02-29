@@ -1,0 +1,1 @@
+{"meta": {"filter": {"processing_date": {"$lte": "2014-11-19", "$gte": "1500-01-01"}}, "total": 531870, "limit": 1000, "offset": 0}, "objects": []}

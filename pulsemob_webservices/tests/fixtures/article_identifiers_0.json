@@ -1,0 +1,1 @@
+{"meta": {"filter": {"processing_date": {"$lte": "2014-11-19", "$gte": "1500-01-01"}}, "total": 531870, "limit": 1000, "offset": 0}, "objects": [{"code": "S0004-282X2014001100902", "collection": "scl", "processing_date": "2014-11-14"}, {"code": "S0004-282X2014001100906", "collection": "scl", "processing_date": "2014-11-14"}]}
