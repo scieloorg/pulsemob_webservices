@@ -88,7 +88,8 @@ It takes a lot of time for indexing articles for the first time.
     $ mv pulsemob_webservices/webservices/settings.default.py pulsemob_webservices/webservices/settings.py
     ```
 
-4. Adjust configuration parameters in settings.py;
+4. Adjust configuration parameters in settings.py. Make sure to set the SECRET_KEY to a large random value and keep it secret.
+
 5. Create tables;
 
     ```sh
