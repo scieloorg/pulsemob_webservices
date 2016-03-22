@@ -2,6 +2,7 @@
 
 __author__ = 'jociel'
 
+import os
 import logging
 import time
 import requests
@@ -28,6 +29,10 @@ def do_request(url, params):
 
 
 def extract_data_from_article_webservice_to_file(article_meta_uri, output_filepath, page_limit=None):
+    dir = os.path.dirname(output_filepath)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
     with open(output_filepath, "w") as text_file:
         page = 0
         while True:
