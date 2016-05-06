@@ -56,6 +56,7 @@ $ git clone git://github.com/Infobase/pulsemob_webservices.git
 $ pip install -r pulsemob_webservices/requirements.txt
 ```
 ### 3. Running server
+
 1. Activate virtualenv;
 
     ```sh
@@ -82,6 +83,7 @@ $ pip install -r pulsemob_webservices/requirements.txt
     $ nohup gunicorn -b 0.0.0.0:8006 webservices.wsgi:application &
     ```
 ### 4. Running the Harvest
+
 1. Open pulsemob_webservices root folder;
 2. Change configuration file name;
 
