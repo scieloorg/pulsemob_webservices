@@ -20,4 +20,3 @@ six==1.10.0
 solrpy==0.9.7
 wheel==0.24.0
 -e git+https://github.com/scieloorg/xylose@0.41#egg=xylose
--e git+https://github.com/scieloorg/pulsemob_webservices@0.1.0#egg=pulsemob_webservices
