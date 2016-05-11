@@ -73,9 +73,9 @@ $ pip install -r pulsemob_webservices/requirements.txt
     ```sh
     $ python pulsemob_webservices/harvest_job.py
     ```
-It takes a lot of time for indexing articles for the first time.
+It takes a lot of time to index articles for the first time.
 
-### 4. Running server
+### 4. Running the server
 1. Activate virtualenv;
 
     ```sh
