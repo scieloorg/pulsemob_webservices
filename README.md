@@ -75,6 +75,18 @@ $ pip install -r pulsemob_webservices/requirements.txt
     ```
 It takes a lot of time to index articles for the first time.
 
+6. Since the category names are available only in English, you must run the following SQL code.
+```sql
+UPDATE common_category SET category_name_pt='Ciências Biológicas', category_name_es='Ciencias Biológicas' WHERE id = 1;
+UPDATE common_category SET category_name_pt='Ciências da Saúde', category_name_es='Ciencias de la Salud' WHERE id = 2;
+UPDATE common_category SET category_name_pt='Engenharias', category_name_es='Ingenierias' WHERE id = 3;
+UPDATE common_category SET category_name_pt='Ciências Sociais Aplicadas', category_name_es='Ciencias Sociales Aplicadas' WHERE id = 4;
+UPDATE common_category SET category_name_pt='Ciências Humanas', category_name_es='Humanidades' WHERE id = 5;
+UPDATE common_category SET category_name_pt='Ciências Exatas e da Terra', category_name_es='Ciencias Exactas y de la Tierra' WHERE id = 6;
+UPDATE common_category SET category_name_pt='Ciências Agrárias', category_name_es='Ciencias Agrícolas' WHERE id = 7;
+UPDATE common_category SET category_name_pt='Lingüística, Letras e Artes', category_name_es='Lingüistica, Letras y Artes' WHERE id = 8;
+```
+
 ### 4. Running the server
 1. Activate virtualenv;
 
