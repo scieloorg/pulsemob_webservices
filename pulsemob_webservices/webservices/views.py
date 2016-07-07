@@ -218,7 +218,7 @@ def create_favorite(self):
                 user_favorite = UserFavorite(None, user_id, article_id)
                 user_favorite.save()
 
-            return HttpResponse(status=200)
+            return HttpResponse(json.dumps({}), status=200)
         else:
             return HttpResponse(status=405)
     except:
