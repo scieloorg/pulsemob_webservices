@@ -75,26 +75,27 @@ def get_solr_args_from_article(document, indexed_date):
         magazine.save()
 
     category_ids = []
-    for item_category in article.journal.subject_areas:
-        category_name = remove_control_chars(u"{0}".format(item_category)).title()
+    if article.journal.subject_areas is not None:
+        for item_category in article.journal.subject_areas:
+            category_name = remove_control_chars(u"{0}".format(item_category)).title()
 
-        try:
-            category = Category.objects.get(category_name_en=category_name)
-        except Category.DoesNotExist:
-            category = Category.objects.create(category_name_en=category_name)
-            category.save()
+            try:
+                category = Category.objects.get(category_name_en=category_name)
+            except Category.DoesNotExist:
+                category = Category.objects.create(category_name_en=category_name)
+                category.save()
 
-        category_ids.append(category.id)
+            category_ids.append(category.id)
 
-        category_publication_relationship = False
-        for category_loop in magazine.categories.all():
-            if category_loop.category_name_en == category_name:
-                category_publication_relationship = True
-                break
+            category_publication_relationship = False
+            for category_loop in magazine.categories.all():
+                if category_loop.category_name_en == category_name:
+                    category_publication_relationship = True
+                    break
 
-        if not category_publication_relationship:
-            magazine.categories.add(category)
-            magazine.save()
+            if not category_publication_relationship:
+                magazine.categories.add(category)
+                magazine.save()
 
     # print ('End - Insert categories and magazines')
     # End - Insert categories and magazines
