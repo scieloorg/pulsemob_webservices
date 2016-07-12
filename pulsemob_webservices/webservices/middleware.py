@@ -17,8 +17,6 @@ class MobileMiddleware(object):
         try:
             logger.info('/mobile')
             logger.info('Authenticating user...')
-            return None
-            print('Authenticating user...')
 
             # region Getting data from meta.
             facebook_id = request.META.get('HTTP_FACEBOOKID', None)
