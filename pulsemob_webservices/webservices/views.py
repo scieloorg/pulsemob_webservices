@@ -243,7 +243,7 @@ def delete_favorite(self):
             except UserFavorite.DoesNotExist:
                 pass
 
-            return HttpResponse(status=200)
+            return HttpResponse(json.dumps({}), status=200)
         else:
             return HttpResponse(status=405)
     except:
