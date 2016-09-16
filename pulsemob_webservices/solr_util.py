@@ -29,12 +29,15 @@ def get_solr_args_from_article(document, indexed_date):
         original_title = original_title
 
     try:  # publication_date format maybe yyyy-mm-dd
-        publication_date = datetime.strptime(article.publication_date, '%Y-%m-%d').isoformat()
+        publication_date = datetime.strptime(article.publication_date, '%Y-%m-%d')
+        publication_date_str = publication_date.strftime('%d/%m/%Y')
     except ValueError:
         try:  # publication_date format maybe yyyy-mm
-            publication_date = datetime.strptime("{0}-01".format(article.publication_date), '%Y-%m-%d').isoformat()
+            publication_date = datetime.strptime("{0}-01".format(article.publication_date), '%Y-%m-%d')
+            publication_date_str = publication_date.strftime('%m/%Y')
         except ValueError:  # publication_date format maybe yyyy
-            publication_date = datetime.strptime("{0}-01-01".format(article.publication_date), '%Y-%m-%d').isoformat()
+            publication_date = datetime.strptime("{0}-01-01".format(article.publication_date), '%Y-%m-%d')
+            publication_date_str = publication_date.strftime('%Y')
 
     article_languages = article.languages()
     languages = []
@@ -113,7 +116,8 @@ def get_solr_args_from_article(document, indexed_date):
         # "journal_abbreviated_title": remove_control_chars(article.journal.abbreviated_title),
         "original_title": remove_control_chars(original_title),
         "original_abstract": remove_control_chars(article.original_abstract()),
-        "publication_date": "{0}Z".format(publication_date),
+        "publication_date": "{0}Z".format(publication_date.isoformat()),
+        "publication_date_str": publication_date_str,
         # "journal_acronym": article.journal.acronym,
         "subject_areas": article.journal.subject_areas,  # Categories
         "subject_areas_ids": category_ids,  # Category ids
