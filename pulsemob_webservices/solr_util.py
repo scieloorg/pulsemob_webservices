@@ -110,8 +110,8 @@ def get_solr_args_from_article(document, indexed_date):
         "journal_title": remove_control_chars(article.journal.title),  # Magazine
         "journal_id": magazine.id,
 
-        "journal_volume": article.volume,
-        "journal_number": article.issue,
+        "journal_volume": article.issue.volume,
+        "journal_number": article.issue.number,
 
         # "journal_abbreviated_title": remove_control_chars(article.journal.abbreviated_title),
         "original_title": remove_control_chars(original_title),
