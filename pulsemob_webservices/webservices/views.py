@@ -29,6 +29,7 @@ from custom_exception import CustomException, CustomErrorMessages
 import validator
 import email_sender
 import bcrypt
+import choices
 
 # Get logger.
 logger = logging.getLogger(__name__)
@@ -130,6 +131,19 @@ def login_mobile(self):
         logger.critical(traceback.format_exc())
         return HttpResponse(CustomErrorMessages.UNEXPECTED_ERROR, status=500)
 
+@decorator_from_middleware(MobileMiddleware)
+def collection(self):
+    try:
+        logger.info('Handling /collection.')
+
+        if self.method == 'GET':
+            return HttpResponse(json.dumps(choices.collections), status=200)
+        else:
+            return HttpResponse('', status=405)
+
+    except:
+        logger.critical(traceback.format_exc())
+        return HttpResponse(CustomErrorMessages.UNEXPECTED_ERROR, status=500)
 
 @decorator_from_middleware(MobileMiddleware)
 def home(self):

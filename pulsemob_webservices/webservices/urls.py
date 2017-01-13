@@ -7,6 +7,7 @@ urlpatterns = [
     # region Mobile webservices.
     url(r'^mobile/login', views.login_mobile),
     url(r'^mobile/home', views.home),
+    url(r'^mobile/collection', views.collection),
 
     url(r'^mobile/solr/version', views.solr_version),
 

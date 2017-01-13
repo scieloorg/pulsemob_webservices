@@ -12,7 +12,7 @@ import time
 
 def delete_article_entry(code):
     print(code)
-    solr_conn.delete(code=code)
+    solr_conn.delete(id=code)
 
 
 def add_update_article_entry(code, document, action, indexed_date):
